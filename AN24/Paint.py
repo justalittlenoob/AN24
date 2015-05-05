@@ -1,0 +1,97 @@
+# -*- coding: utf-8 -*-
+
+"""
+Module implementing Holter.
+"""
+import sys
+import PyQt4
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import QMainWindow
+from PyQt4.QtCore import pyqtSignature
+from Ui_Holter import Ui_Holter
+from calculation import *
+
+path="E:/5-HOLTER/new/long.csv"
+Time, FHR, MHR, EHG= OpenCsv(path)
+Baseline=CalBaseline(FHR)
+class Holter(QMainWindow, Ui_Holter):
+    """
+    Class documentation goes here.
+    """
+    def __init__(self, parent = None):
+        """
+        Constructor
+        """
+        QMainWindow.__init__(self, parent)
+        self.setupUi(self)
+    def paintEvent(self, event):
+        qp = QtGui.QPainter()
+        qp.begin(self)
+        self.drawBackground(qp)
+        self.drawScales(qp)
+        self.drawFHR(qp)
+        self.drawLines(qp)
+        qp.end()
+    def drawBackground(self, qp):
+        color = QtGui.QColor()
+        color.setNamedColor('#d4d4d4')
+        size=self.size()
+        xstep=float(size.width())/59
+        ystep=float(size.height())/150
+        qp.setPen(color)       
+        qp.setBrush(QtGui.QColor(247, 220, 230, 200))
+        qp.drawRect(0,size.height()-30*ystep, size.width(), 30*ystep)
+        qp.setBrush(QtGui.QColor(255, 251, 190, 160))
+        qp.drawRect(0, size.height()-60*ystep, size.width(), 30*ystep)
+        qp.setBrush(QtGui.QColor(255, 255, 255, 200))
+        qp.setPen(QtGui.QColor(255, 255, 255, 200))    
+        qp.drawRect(0, size.height()-100*ystep, size.width(), 40*ystep)
+        qp.setBrush(QtGui.QColor(255, 251, 190, 160))
+        qp.setPen(color)    
+        qp.drawRect(0, size.height()-130*ystep, size.width(), 30*ystep)
+        qp.setBrush(QtGui.QColor(247, 220, 230, 200))
+        qp.drawRect(0,0, size.width(), 20*ystep)  
+    def drawScales(self, qp):
+        pen = QtGui.QPen(QtGui.QColor(165, 173, 181), 1, QtCore.Qt.DotLine)
+        qp.setPen(pen)
+        qp.setFont(QtGui.QFont('Decorative', 10))
+        size=self.size()
+        xstep=float(size.width())/58
+        ystep=float(size.height())/150
+        for i in range(59):
+            if i!=0:
+                qp.drawLine(xstep*i, 0, xstep*i, size.height())
+        for yscale in range(201)[0:151:10]:
+            print yscale
+            qp.drawLine(0, size.height()-yscale*ystep,size.width(),size.height()-yscale*ystep)
+            qp.drawText(5,size.height()-yscale*ystep, "%s" %(yscale+50))
+
+    def drawLines(self, qp):
+        pen = QtGui.QPen(QtGui.QColor(18, 129, 232), 2, QtCore.Qt.SolidLine)
+        qp.setPen(pen)
+        i=0
+        size=self.size()
+        xstep=float(size.width())/58
+        ystep=float(size.height())/150
+        for baseline in Baseline[0:54]:
+            if i!=0:
+                qp.drawLine(xstep*(i-1+5), size.height()-ystep*(Baseline[i-1]-50), xstep*(i+5), size.height()-ystep*(Baseline[i]-50))
+            i+=1
+    def drawFHR(self, qp):
+        pen = QtGui.QPen(QtGui.QColor(0, 0, 0), 0.5, QtCore.Qt.SolidLine)
+        qp.setPen(pen)
+        i=0
+        size=self.size()
+        xstep=float(size.width())/(60*240)
+        ystep=float(size.height())/150
+        for baseline in FHR[0:60*240]:
+            if i!=0 and FHR[i-1]!=0 and FHR[i]!=0:
+                qp.drawLine(xstep*(i-1), size.height()-ystep*(FHR[i-1]-50), xstep*i, size.height()-ystep*(FHR[i]-50))
+            i+=1
+if __name__ == "__main__":
+    app = PyQt4.QtGui.QApplication(sys.argv)
+    dlg=Holter()
+    dlg.show()
+    sys.exit(app.exec_())
+    
+    

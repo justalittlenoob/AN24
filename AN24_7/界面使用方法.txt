@@ -1,0 +1,6 @@
+step1:把数据相关包拷贝到该文件夹下
+step2:运行Holter.py
+step3:依次点击界面上方按钮，search-connect-check-start-stop
+step4:拔掉电极，观察是否弹窗，插上电极，观察弹窗是否隐藏。
+step5:sound off是否能关闭声音
+step6:右侧1,2,3按钮是否能切换界面比例尺。

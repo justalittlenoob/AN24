@@ -1,0 +1,54 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+addr	.\client2_v2.py	/^    addr = sys.argv[1]$/;"	v
+addr	.\client2_v2.py	/^addr = None$/;"	v
+addr	.\rfcomm_client2.py	/^    addr = sys.argv[1]$/;"	v
+addr	.\rfcomm_client2.py	/^addr = None$/;"	v
+bd_addr	.\rfcomm_client.py	/^bd_addr = "00:80:98:0E:39:77"$/;"	v
+bluetooth	.\discovery.py	/^import bluetooth$/;"	i
+bluetooth	.\rfcomm_client.py	/^import bluetooth$/;"	i
+bluetooth	.\rfcomm_server.py	/^import bluetooth$/;"	i
+chardet	.\rfcomm_client.py	/^import chardet$/;"	i
+data	.\client2_v2.py	/^    data = sock.recv(65535)$/;"	v
+data	.\rfcomm_client.py	/^    data = sock.recv(65535)$/;"	v
+data	.\rfcomm_client2.py	/^    data = input()$/;"	v
+data	.\rfcomm_server.py	/^data = client_sock.recv(1024)$/;"	v
+data	.\rfcomm_server2.py	/^        data = client_sock.recv(1024)$/;"	v
+first_match	.\client2_v2.py	/^first_match = service_matches[0]$/;"	v
+first_match	.\rfcomm_client2.py	/^first_match = service_matches[0]$/;"	v
+formatData	.\rfcomm_client.py	/^def formatData(data):$/;"	f
+host	.\client2_v2.py	/^host = first_match["host"]$/;"	v
+host	.\rfcomm_client2.py	/^host = first_match["host"]$/;"	v
+input	.\client2_v2.py	/^    input = raw_input$/;"	v
+input	.\rfcomm_client2.py	/^    input = raw_input$/;"	v
+name	.\client2_v2.py	/^name = first_match["name"]$/;"	v
+name	.\rfcomm_client2.py	/^name = first_match["name"]$/;"	v
+port	.\client2_v2.py	/^port = first_match["port"]$/;"	v
+port	.\rfcomm_client.py	/^port = 1$/;"	v
+port	.\rfcomm_client2.py	/^port = first_match["port"]$/;"	v
+port	.\rfcomm_server.py	/^port = 1$/;"	v
+port	.\rfcomm_server2.py	/^port = server_sock.getsockname()[1]$/;"	v
+profiles	.\rfcomm_server2.py	/^                   profiles = [ SERIAL_PORT_PROFILE ], $/;"	v
+reload	.\rfcomm_client.py	/^from __builtin__ import reload$/;"	i
+server_sock	.\rfcomm_server.py	/^server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )$/;"	v
+server_sock	.\rfcomm_server2.py	/^server_sock=BluetoothSocket( RFCOMM )$/;"	v
+service_classes	.\rfcomm_server2.py	/^                   service_classes = [ uuid, SERIAL_PORT_CLASS ],$/;"	v
+service_id	.\rfcomm_server2.py	/^                   service_id = uuid,$/;"	v
+service_matches	.\client2_v2.py	/^service_matches = find_service( uuid = uuid, address = addr )$/;"	v
+service_matches	.\rfcomm_client2.py	/^service_matches = find_service( uuid = uuid, address = addr )$/;"	v
+sock	.\client2_v2.py	/^sock=BluetoothSocket( RFCOMM )$/;"	v
+sock	.\rfcomm_client.py	/^sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )$/;"	v
+sock	.\rfcomm_client2.py	/^sock=BluetoothSocket( RFCOMM )$/;"	v
+socket	.\discovery.py	/^import socket$/;"	i
+sys	.\client2_v2.py	/^import sys$/;"	i
+sys	.\discovery.py	/^import sys$/;"	i
+sys	.\rfcomm_client.py	/^import sys$/;"	i
+sys	.\rfcomm_client2.py	/^import sys$/;"	i
+types	.\rfcomm_client.py	/^import types$/;"	i
+uuid	.\client2_v2.py	/^uuid = "22222222"$/;"	v
+uuid	.\rfcomm_client2.py	/^uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"$/;"	v
+uuid	.\rfcomm_server2.py	/^uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"$/;"	v
