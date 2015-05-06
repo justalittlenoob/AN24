@@ -1,0 +1,13 @@
+AN24.py
+
+方法：scan_bt() : 返回扫描的的AN24设备，类型：dict
+  类：AN24
+   属性：1.sock，判断连接是否成功，失败返回False，否则成功
+         2.cache，数据缓存，类型list
+         3.run_chk, 电极脱落时状态，全为0是正常，类型list
+******** 4.low_battry[0], 初始值为False，电池电量低时为True
+         5.init_chk，初始化电极检查，全为0时正常，类型list
+         6.battry，电池电量，类型float
+    方法：1.data_recv(),运行后，cache里开始接受数据，无返回值。
+********  2.stop_recv(),运行后停止进程，释放端口
+         
