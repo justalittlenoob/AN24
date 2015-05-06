@@ -1,0 +1,5 @@
+python 2.7.8
+pybluez 0.20
+pyqt 4.11.2
+pyserial 2.5
+
