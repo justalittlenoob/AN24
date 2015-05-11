@@ -282,15 +282,19 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop):
             #print len(m.group())      # //76
             #print m.group().isdigit()  #//False
             #print dir(m.group())
-
+        '''
         if endstr in lbuf:
             endpos = lbuf.index(endstr) + 4 
          
         else:
             pass
-    
-        lbuf = lbuf[endpos:]
-    
+        '''
+        while endstr in lbuf:
+            endpos = lbuf.index(endstr) +4
+            lbuf = lbuf[endpos:]
+
+        #lbuf = lbuf[endpos:]
+        #print '***lbuf size***', len(lbuf) 
 
 #import time
 #data_cache = []
