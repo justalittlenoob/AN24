@@ -15,6 +15,7 @@ from __builtin__ import reload
 #import types
 from log import log
 import init_An24
+from tcp.client import upload_data
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
 print '[ok] set default coding:', sys.getdefaultencoding()
@@ -211,6 +212,10 @@ def data_parse(cblock_str, run_chk, low_battry):
         
     log('run_chk', run_chk)
     #return FHR, MHR, TOCO, mother_mv, SNR, event
+    #upload_data(data_one_sec)
+    updata = ','.join(str(v) for v in FHR)
+    print 'updata:', updata
+    upload_data(updata)
     return data_one_sec
 
 
