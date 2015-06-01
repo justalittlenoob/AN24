@@ -15,7 +15,7 @@ def upload_data(message='hello from win7 client'):
     print '[ok] connected to ' + host 
 
     #message = 'hello from win7 client'
-    ''.join(message)
+    #''.join(message)
     print 'message:', message
     s.send(message)
     s.close()

@@ -264,6 +264,7 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop):
         buf = sock.recv(65535)
 
         if not len(buf):
+            #sock.close()
             break
     
         hexbuf = buf.encode('hex')
