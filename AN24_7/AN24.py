@@ -16,6 +16,7 @@ class AN24 (object):
     def __init__(self, bt_addr):
         '''Fail return False(type=bool)
         sucess return sock(type=socket)'''
+        self._addr = bt_addr
         _sock = init_An24.conn(bt_addr)
         #self._stream = [[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]]
         self._stream=None
@@ -55,7 +56,7 @@ class AN24 (object):
 
     '''start a thread to recv data'''
     def data_recv(self):
-        data.start_data_thread(self.sock,self.cache,self.run_chk,self.low_battry,self.stop)
+        data.start_data_thread(self.sock,self.cache,self.run_chk,self.low_battry,self.stop,self._addr)
 
     def stop_recv(self):
         self.stop = True

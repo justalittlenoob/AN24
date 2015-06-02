@@ -16,6 +16,7 @@ from __builtin__ import reload
 from log import log
 import init_An24
 from tcp.client import upload_data
+import bt_reconn
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
 print '[ok] set default coding:', sys.getdefaultencoding()
@@ -215,14 +216,14 @@ def data_parse(cblock_str, run_chk, low_battry):
     #upload_data(data_one_sec)
     updata = ','.join(str(v) for v in FHR)
     print 'updata:', updata
-    upload_data(updata)
+    #upload_data(updata)
     return data_one_sec
 
 
 #import time
 #check_value = [0, 0, 0, 0, 0]
 
-def data_recv_An24(sock, data_cache, run_chk, low_battry,stop):
+def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr):
     # ************
     #   connect An24(bd_addr) then recieve data from it
     # ************
@@ -265,7 +266,10 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop):
 
         if not len(buf):
             #sock.close()
-            break
+            sock = bt_reconn.reconnect(bt_addr, sock)
+            buf = sock.recv(65535)
+
+            #break
     
         hexbuf = buf.encode('hex')
         lbuf = lbuf + hexbuf
@@ -317,15 +321,15 @@ def stream_in_cache(data_slice, data_cache):
     #print len(data_cache)
 
 import threading
-def start_data_thread(sock, data_cache, run_chk,low_battry,stop):
+def start_data_thread(sock, data_cache, run_chk,low_battry,stop,bt_addr):
     '''Make a thread'''
     if stop == False:
         threading.Thread(target=data_recv_An24,
-                args=(sock,data_cache,run_chk,low_battry,stop)
+                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr)
             ).start() 
     else:
         threading.Thread(target=data_recv_An24,
-                args=(sock,data_cache,run_chk,low_battry,stop)
+                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr)
             ).stop()
 def not_empty(s):
 	return s and s.strip()
