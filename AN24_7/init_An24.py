@@ -1,7 +1,7 @@
 #!/usr/b in/env pytho n
 #-*- coding: UTF-8 -*-
 import bluetooth
-
+from synclk.crc import machenPaket
 def scan_bluetooth():
     print("performing inquiry...")
     An24_menu = {}
@@ -42,13 +42,33 @@ def conn(bt_addr="00:80:98:0E:39:77"):
         return False
     return sock 
     print '[ok] connection'
-
+'''
+def syn_clk(sock):
+    UTIME =  machenPaket()
+    sock.send(UTIME)
+def inquire_time(sock):
+    TIME = '\x10\x02N02PCTIME\x10\x03\x0b\x73'
+    #DATE = '\x10\x02NO2PCDATE\x10\x03\xfb\x0a'
+    sock.send(TIME)
+def inquire_date(sock):
+    DATE = '\x10\x02NO2PCDATE\x10\x03\xfb\x0a'
+    sock.send(DATE)
+'''
+import time
 def start(sock):
     print 'start...'
     print '[waiting reply...]'
     print '[ok] ready to accept data '
-    G = '\x10\x02G\x10\x03\x42\x1f'
+    #G = '\x10\x02G\x10\x03\x42\x1f'
+    G = machenPaket()
+    TIME = '\x10\x02N02PCTIME\x10\x03\x0b\x73'
+    #DATE  = '\x10\x02N02PCDATE\x10\x03\xfb\x0a'
+    #print 'G', G
     sock.send(G)
+
+    print '[ok] utime'
+    time.sleep(2)
+    sock.send(TIME)
     return sock
 
 def stop(sock):

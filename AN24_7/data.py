@@ -48,7 +48,7 @@ DATE = '\x10\x02N02PCDATE\x10\x03\xfb\x0a'
 DISN = '\x10\x02N02PCDISN\x10\x03\x58\xfb'
 #N's MODE
 MODE = '\x10\x02N02PCMODE\x10\x03\x67\xe7'
-
+RES = '\x10\x02N02PCRES\x10\x03\x18\xf4'
 '''
 #waiting receive
 server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
@@ -266,13 +266,15 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr):
 
         if not len(buf):
             #sock.close()
+            '''
             sock = bt_reconn.reconnect(bt_addr, sock)
             buf = sock.recv(65535)
-
-            #break
+            '''
+            break
     
         hexbuf = buf.encode('hex')
-        lbuf = lbuf + hexbuf
+        lbuf = lbuf + hexbuf                #hex
+        #lbuf = lbuf + buf                    #ascci for test
         #regbuf = pattern.findall(lbuf)
 
         for m in pattern.finditer(lbuf):

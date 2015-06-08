@@ -53,6 +53,8 @@ def reconnect(bt_addr, sock):
             break
     print '[ok]  reconnection'
     G = '\x10\x02G\x10\x03\x42\x1f'
+    RES = '\x10\x02N02PCRES\x10\x03\x18\xf4'
+    stat_conn.send(RES)
     stat_conn.send(G)
     print '[ok] ready recv data'
     
