@@ -1,6 +1,7 @@
 #!/user/b in/env python n
 #-*- coding:UTF-8 -*-
 import bluetooth
+import ctypes
 #from threading import timer
 import time
 def find_this_bt(bt_addr):
@@ -31,7 +32,15 @@ def conn_this_bt(bt_addr, sock):
 
 
 
-def reconnect(bt_addr, sock):
+def reconnect(bt_addr, sock, _count_pos):
+
+    dll = ctypes.CDLL(r'D:\WorkSpace\Github\AN24_7\dll\crc.dll')
+    frame = '\x10\x02N02PCR' + _count_pos + '\x10\x03'
+    crc = hex(dll.generate_CRC(frame))
+    crc1 = crc[2:4].decode('hex')
+    crc2 = crc[4:6].decode('hex')
+    R = frame + crc1 +crc2
+
     stat_find = find_this_bt(bt_addr)
     #print 'stat_find(origin)', stat_find
     while 1:
@@ -53,11 +62,12 @@ def reconnect(bt_addr, sock):
             break
     print '[ok]  reconnection'
     G = '\x10\x02G\x10\x03\x42\x1f'
-    RES = '\x10\x02N02PCRES\x10\x03\x18\xf4'
+    #RES = '\x10\x02N02PCRES\x10\x03\x18\xf4'
     DISN = '\x10\x02N02PCDISN\x10\x03\x58\xfb'
     #stat_conn.send(RES)
     stat_conn.send(DISN)
     stat_conn.send(G)
+    stat_conn.send(R)
     print '[ok] ready recv data'
     
     return stat_conn 

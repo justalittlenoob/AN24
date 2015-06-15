@@ -78,13 +78,14 @@ def format_data(data):
     return str_Ret
 
 CBLOCK_STR_LEN = 76
+COUNT_STR_LEN = 54    #count block
 NBLOCK_STR_LEN = 36
 NBLOCK_SNR_TAG = '53'   # S
 HEART_RATE_RESOLUTION = 0.25
 TOTO_RESOLUTION = 0.5
 SNR = 0.0
 ELECTRODE_STR_LEN = 20
-def data_parse(cblock_str, run_chk, low_battry):
+def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     '''Compute the FHR MHR TOCO mother_mv 
     from C block'''
     mm = '10024d4d1003'                 # MM block
@@ -96,6 +97,10 @@ def data_parse(cblock_str, run_chk, low_battry):
     mother_mv = []
     data_one_sec = []
     #init_An24.run_check(cblock_str)
+    if (len(cblock_str) == COUNT_STR_LEN) and ('41' == cblock_str[14:16]):
+            _count_pos[0] = cblock_str[16:32]
+            print '_count_pos:', _count_pos
+
     if(len(cblock_str) == CBLOCK_STR_LEN):
         
 
@@ -224,8 +229,8 @@ def data_parse(cblock_str, run_chk, low_battry):
 
 #import time
 #check_value = [0, 0, 0, 0, 0]
-
-def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr):
+#import random
+def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_pos):
     # ************
     #   connect An24(bd_addr) then recieve data from it
     # ************
@@ -260,10 +265,18 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr):
     data_one_sec = []
 
     while 1:
+                
         if stop == True:
             #sock ==init_An24.stop(sock)
             sock.close()
             close_data_thread()
+        '''
+        rand = random.randint(0, 10)
+        
+        if rand < 5:
+            print '[ok] send R message'
+            sock.send('\x10\x02N02PCR00000001\x10\x03\x5d\x6f')
+        '''
         buf = sock.recv(65535)
         
         #-- reconnection
@@ -271,7 +284,7 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr):
         if not len(buf):
             #sock.close()
             
-            sock = bt_reconn.reconnect(bt_addr, sock)
+            sock = bt_reconn.reconnect(bt_addr, sock, _count_pos)
             buf = sock.recv(65535)
             
             #break
@@ -292,7 +305,7 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr):
                 sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
                 sock = init_An24.start(sock)
             #log('electrode:', init_An24.check_value)
-            #data_one_sec = data_parse(m.group(), run_chk, low_battry)
+            #data_one_sec = data_parse(m.group(), run_chk, low_battry, _count_pos)
             #stream_in_cache(data_one_sec, data_cache)
             #log( 'cache:', data_cache)
             #print stream_in_cache()
@@ -326,16 +339,17 @@ def stream_in_cache(data_slice, data_cache):
     #print len(data_cache)
 
 import threading
-def start_data_thread(sock, data_cache, run_chk,low_battry,stop,bt_addr):
+def start_data_thread(sock, data_cache, run_chk,low_battry,stop,bt_addr,_count_pos):
     '''Make a thread'''
     if stop == False:
         threading.Thread(target=data_recv_An24,
-                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr)
+                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr,_count_pos)
             ).start() 
     else:
         threading.Thread(target=data_recv_An24,
-                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr)
+                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr,_count_pos)
             ).stop()
+
 def not_empty(s):
 	return s and s.strip()
 
