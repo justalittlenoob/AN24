@@ -11,24 +11,26 @@ def machenPaket():
 	dll = ctypes.CDLL(r'D:\WorkSpace\Github\AN24_7\synclk\dll\crc.dll')
 	data = 'N02PCUTIME'
 	#Get the current time in year,month,day,hour,minute,second
-        '''
+        
         lt = localtime()
         print 'localtime:', lt
         year = int(strftime('%Y', lt))
-        yearl = hex(year)
+        year_str =str(year)
+        yearl = chr(int(year_str[0:2]))
+        yearm = chr(int(year_str[2]+year_str[3]))
         #yearh = hex(year & 0x0100)
         print 'yearl:', yearl
-        #print 'yearh:', yearh
+        print 'yearm:', yearm
 
-        month = strftime('%m', lt)
+        month = chr(int(strftime('%m', lt)))
         print 'month:', month
-        day = strftime('%d', lt)
+        day = chr(int(strftime('%d', lt)))
         print 'day:', day
-        hour = strftime('%H', lt)
+        hour = chr(int(strftime('%H', lt)))
         print 'hour:', hour
-        minute = strftime('%M', lt)
+        minute = chr(int(strftime('%m', lt)))
         print 'minute:', minute
-        second = strftime('%S', lt)
+        second = chr(int(strftime('%S', lt)))
         print 'second:', second
 
         '''
@@ -40,20 +42,23 @@ def machenPaket():
 	hour=Cstringform(int(strftime("%H",localtime())))
 	minute=Cstringform(int(strftime("%M",localtime())))
 	second=Cstringform(int(strftime("%S",localtime())))
-	
+	'''
 	#append time to the payload, generate crc,  append crc to it, and return the whole frame
 
 	frame='\x10\x02'+ data+day+month+yearl+yearm+hour+minute+second + '\x10\x03'
         #G = '\x10\x02G\x10\x03'
 	crc=hex(dll.generate_CRC(frame)) #crc format: 0x**** ,desired format \x**\x**
         #crc_test= hex(dll.generate_CRC(G))
-	#str = frame + '\\x' + crc[2:4] + '\\x' + crc[4:6]
-        str = frame 
-        hex_str = b2a_hex(str) + crc[2:4] + crc[4:6]
+	utime = frame +  crc[2:4].decode('hex')  + crc[4:6].decode('hex')
+        print 'utime:', utime
+        return utime
+        '''
+        str_ = frame 
+        hex_str = b2a_hex(str_) + crc[2:4] + crc[4:6]
         print 'hex_str:', hex_str,type(hex_str)
         print 'G:crc', crc,type(crc)
         return hex_str
-
+        '''
 
 
 #This function converts the original format(0x* when the value<16, 0x** otherwise) 

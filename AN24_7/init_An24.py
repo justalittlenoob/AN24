@@ -59,16 +59,21 @@ def start(sock):
     print 'start...'
     print '[waiting reply...]'
     print '[ok] ready to accept data '
-    #G = '\x10\x02G\x10\x03\x42\x1f'
-    G = machenPaket()
-    TIME = '\x10\x02N02PCTIME\x10\x03\x0b\x73'
+    G = '\x10\x02G\x10\x03\x42\x1f'
+    DISN = '\x10\x02N02PCDISN\x10\x03\x58\xfb'
+    #DISF = '\x10\x02N02PCDISF1111\x10\x03\xd3\xeb'
+    #G = '\x10\x02N02PCUTIME\x09\x06\x0f\x14\x10\x1a\x1e\x10\x03\xc2\x10'
+    #G = machenPaket()
+    #TIME = '\x10\x02N02PCTIME\x10\x03\x0b\x73'
     #DATE  = '\x10\x02N02PCDATE\x10\x03\xfb\x0a'
     #print 'G', G
+    sock.send(DISN)
+    print '[ok] setting DISN'
     sock.send(G)
 
-    print '[ok] utime'
-    time.sleep(2)
-    sock.send(TIME)
+    #print '[ok] utime'
+    #time.sleep(2)
+    #sock.send(DATE)
     return sock
 
 def stop(sock):

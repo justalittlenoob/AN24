@@ -76,9 +76,9 @@ class AN24 (object):
 if __name__ == "__main__":
     scan_bt()
     AN24 = AN24("00:80:98:0E:39:77")
-    print 'initchk:', AN24.init_chk
+    #print 'initchk:', AN24.init_chk
     log("connected?", AN24.sock)
-    #battry = AN24.battry
+    battry = AN24.battry
     #init_An24.syn_clk(AN24.sock)
     #init_An24.inquire_date(AN24.sock)
     #init_An24.inquire_time(AN24.sock)

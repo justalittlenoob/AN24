@@ -49,6 +49,8 @@ DISN = '\x10\x02N02PCDISN\x10\x03\x58\xfb'
 #N's MODE
 MODE = '\x10\x02N02PCMODE\x10\x03\x67\xe7'
 RES = '\x10\x02N02PCRES\x10\x03\x18\xf4'
+DISF = '\x10\x02N02PCDISF1111\x10\x03\xd3\xeb'
+
 '''
 #waiting receive
 server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
@@ -263,27 +265,35 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr):
             sock.close()
             close_data_thread()
         buf = sock.recv(65535)
-
+        
+        #-- reconnection
+        
         if not len(buf):
             #sock.close()
-            '''
+            
             sock = bt_reconn.reconnect(bt_addr, sock)
             buf = sock.recv(65535)
-            '''
-            break
-    
+            
+            #break
+        
         hexbuf = buf.encode('hex')
         lbuf = lbuf + hexbuf                #hex
-        #lbuf = lbuf + buf                    #ascci for test
+        #print '-----lbuf:',lbuf
         #regbuf = pattern.findall(lbuf)
-
+        
         for m in pattern.finditer(lbuf):
+            '''
             print '------------------------------'
             log('source data:', m.group())
             print '------------------------------'
+            '''
+            print m.group()
+            if '10024e3032414e474f541003' == m.group():
+                sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
+                sock = init_An24.start(sock)
             #log('electrode:', init_An24.check_value)
-            data_one_sec = data_parse(m.group(), run_chk, low_battry)
-            stream_in_cache(data_one_sec, data_cache)
+            #data_one_sec = data_parse(m.group(), run_chk, low_battry)
+            #stream_in_cache(data_one_sec, data_cache)
             #log( 'cache:', data_cache)
             #print stream_in_cache()
             #print type(data_all)      #tuple
@@ -294,20 +304,13 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr):
             #print len(m.group())      # //76
             #print m.group().isdigit()  #//False
             #print dir(m.group())
-        '''
-        if endstr in lbuf:
-            endpos = lbuf.index(endstr) + 4 
-         
-        else:
-            pass
-        '''
+            
         while endstr in lbuf:
-            endpos = lbuf.index(endstr) +4
+            endpos = lbuf.index(endstr) + 4 
             lbuf = lbuf[endpos:]
+        
 
-        #lbuf = lbuf[endpos:]
-        #print '***lbuf size***', len(lbuf) 
-
+        
 #import time
 #data_cache = []
 def stream_in_cache(data_slice, data_cache):

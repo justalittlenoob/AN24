@@ -18,5 +18,5 @@ def time(tmp):
     print 'minte:', minute
     print 'second:', second
 if __name__ == '__main__':
-    date('030304642454338')
-    time('3030314634423334')
+    date('3030304642454346')
+    time('3030314631303937')
