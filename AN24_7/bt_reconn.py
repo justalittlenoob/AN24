@@ -35,7 +35,7 @@ def conn_this_bt(bt_addr, sock):
 def reconnect(bt_addr, sock, _count_pos):
 
     dll = ctypes.CDLL(r'D:\WorkSpace\Github\AN24_7\dll\crc.dll')
-    frame = '\x10\x02N02PCR' + _count_pos + '\x10\x03'
+    frame = '\x10\x02N02PCR' + _count_pos[0].decode('hex') + '\x10\x03'
     crc = hex(dll.generate_CRC(frame))
     crc1 = crc[2:4].decode('hex')
     crc2 = crc[4:6].decode('hex')
@@ -66,8 +66,9 @@ def reconnect(bt_addr, sock, _count_pos):
     DISN = '\x10\x02N02PCDISN\x10\x03\x58\xfb'
     #stat_conn.send(RES)
     stat_conn.send(DISN)
-    stat_conn.send(G)
     stat_conn.send(R)
+    stat_conn.send(G)
+    
     print '[ok] ready recv data'
     
     return stat_conn 

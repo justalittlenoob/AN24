@@ -77,7 +77,7 @@ class Holter(QMainWindow, Ui_Holter):
             nameChosen =self.an24Chosen['name']
             Cache = self.an24Dict[nameChosen].rawAN24.cache
             end_count = len(self.an24Dict[nameChosen].rawAN24.cache)
-            print 'gotdata--start:', self.end_count_pre, Cache[self.end_count_pre:end_count], 'end:', end_count
+            #print 'gotdata--start:', self.end_count_pre, Cache[self.end_count_pre:end_count], 'end:', end_count
             self.end_count_pre = end_count
         except Exception, reason:
             print 'can not print cache now.', reason    
@@ -91,7 +91,7 @@ class Holter(QMainWindow, Ui_Holter):
                 pass
             else:
                 DlgCheck_Run.run_check(an24Dict_chosen)
-                print 'checking pin'
+                #print 'checking pin'
         except Exception, reason:
             print 'not run_check well', reason    
     

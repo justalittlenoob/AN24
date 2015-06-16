@@ -282,8 +282,6 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
         #-- reconnection
         
         if not len(buf):
-            #sock.close()
-            
             sock = bt_reconn.reconnect(bt_addr, sock, _count_pos)
             buf = sock.recv(65535)
             
@@ -305,8 +303,8 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
                 sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
                 sock = init_An24.start(sock)
             #log('electrode:', init_An24.check_value)
-            #data_one_sec = data_parse(m.group(), run_chk, low_battry, _count_pos)
-            #stream_in_cache(data_one_sec, data_cache)
+            data_one_sec = data_parse(m.group(), run_chk, low_battry, _count_pos)
+            stream_in_cache(data_one_sec, data_cache)
             #log( 'cache:', data_cache)
             #print stream_in_cache()
             #print type(data_all)      #tuple
