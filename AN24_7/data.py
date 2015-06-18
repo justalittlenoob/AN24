@@ -221,8 +221,8 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     log('run_chk', run_chk)
     #return FHR, MHR, TOCO, mother_mv, SNR, event
     #upload_data(data_one_sec)
-    updata = ','.join(str(v) for v in FHR)
-    print 'updata:', updata
+    #updata = ','.join(str(v) for v in FHR)
+    #print 'updata:', updata
     #upload_data(updata)
     return data_one_sec
 

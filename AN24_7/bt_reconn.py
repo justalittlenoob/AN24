@@ -50,11 +50,11 @@ def reconnect(bt_addr, sock, _count_pos):
         #print 'stat_find(in while)', stat_find
         if True == stat_find:
             break
-    print '[ok] find device'
+    print '[ok] find the lost device'
 
     stat_conn = conn_this_bt(bt_addr, sock)
     while 1:
-        print '[not] reconnection'
+        print '[waiting] reconnection'
         time.sleep(1)
         stat_conn = conn_this_bt(bt_addr, sock)
         print 'stat_conn', stat_conn

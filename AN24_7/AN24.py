@@ -25,11 +25,13 @@ class AN24 (object):
             self.sock = _sock 
         else:
             raise AttributeError('conn fail, check bluetooth device')
-        self.cache = []
-        self.run_chk = [0, 0, 0, 0, 0]
-        
-        self.low_battry = [False]
-        self.stop = False
+        self.cache = []                #data cache
+        self.run_chk = [0, 0, 0, 0, 0]  # checking when running
+        self.bt_state = [False]            # bluetooth connection status 
+        self.web_state = [False]         # web connection status
+        self.out_of_range = [False]     # whether the person is in range
+        self.low_battry = [False]       # the low battry signal
+        self.stop = False              # stop recieve data
         '''
         self.bt_state
         self.web_state
