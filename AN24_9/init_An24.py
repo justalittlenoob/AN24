@@ -32,12 +32,17 @@ def is_An24(bt_name):
     else:
         return False
 def conn(bt_addr="00:80:98:0E:39:77"):
-    #BAT = '\x10\x02N02PCBAT\x10\x03\x53\xcf'
     port = 1 
     print 'port:', port
     sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
     try:    
         sock.connect((bt_addr, port))
+        msg = sock_recv(sock, 24, 24)
+        print 'msg:', msg
+        if '10024e3032414e474f541003' == msg:
+            sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
+        else:
+            pass
     except :
         return False
     return sock 

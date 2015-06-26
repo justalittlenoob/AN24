@@ -344,7 +344,7 @@ class Holter(QMainWindow, Ui_Holter):
                 self.an24Dict[nameChosen].start_time=time.time()
                 self.an24Dict[nameChosen].all_battry_time = self.an24Dict[nameChosen].rawAN24.battry            
                 self.an24Dict[nameChosen].rawAN24.data_recv()
-                self.timerPaint.start(1000)
+                self.timerPaint.start(2000)
                 self.start_sound()
                 self.an24Dict[nameChosen].is_detecting = True
                 #print 'detect begin'

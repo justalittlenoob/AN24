@@ -100,6 +100,7 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     if (len(cblock_str) == COUNT_STR_LEN) and ('41' == cblock_str[14:16]):
             _count_pos[0] = cblock_str[16:32]
             print '_count_pos:', _count_pos
+            return 
 
     if(len(cblock_str) == CBLOCK_STR_LEN):
         
@@ -192,11 +193,12 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
         log('-!-!-!-!-event-!-!-!-!-', event)
          
     elif cblock_str == low_battry:
-        FHR = [0, 0, 0, 0]
-        MHR = [0, 0, 0, 0]
-        mother_mv = [0, 0, 0, 0]
+        #FHR = [0, 0, 0, 0]
+        #MHR = [0, 0, 0, 0]
+        #mother_mv = [0, 0, 0, 0]
         #init_An24.LOW_BATTRY = True
         low_battry[0] = True
+        return
 
     else:
         FHR = [0, 0, 0, 0]
@@ -204,9 +206,9 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
         mother_mv = [0, 0, 0, 0]
 
     data_one_sec.append([FHR[0], MHR[0], TOCO, mother_mv[0], SNR, event])
-    data_one_sec.append([FHR[1], MHR[1], TOCO, mother_mv[1], SNR, event])
-    data_one_sec.append([FHR[2], MHR[2], TOCO, mother_mv[2], SNR, event])
-    data_one_sec.append([FHR[3], MHR[3], TOCO, mother_mv[3], SNR, event])
+    data_one_sec.append([FHR[1], MHR[1], TOCO, mother_mv[1], SNR, 0])
+    data_one_sec.append([FHR[2], MHR[2], TOCO, mother_mv[2], SNR, 0])
+    data_one_sec.append([FHR[3], MHR[3], TOCO, mother_mv[3], SNR, 0])
     print '------------------------------'
     log('data_one_sec:', data_one_sec)
     print '------------------------------'
@@ -299,12 +301,15 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
             print '------------------------------'
             '''
             print m.group()
+            '''
             if '10024e3032414e474f541003' == m.group():
                 sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
                 sock = init_An24.start(sock)
+            '''
             #log('electrode:', init_An24.check_value)
             data_one_sec = data_parse(m.group(), run_chk, low_battry, _count_pos)
-            stream_in_cache(data_one_sec, data_cache)
+            if data_one_sec != None:
+                stream_in_cache(data_one_sec, data_cache)
             #log( 'cache:', data_cache)
             #print stream_in_cache()
             #print type(data_all)      #tuple
