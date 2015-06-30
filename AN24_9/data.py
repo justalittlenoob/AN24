@@ -174,10 +174,11 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
              SNR_func = lambda x, y : round(x / float(y), 4)
              SNR = SNR_func(fetal_signal,
                            noise)
-
+             
              #print 'SNR:', SNR
          else:
              pass
+         return 
     elif len(cblock_str) == ELECTRODE_STR_LEN:
         FHR = [0, 0, 0, 0]
         MHR = [0, 0, 0, 0]
@@ -201,9 +202,12 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
         return
 
     else:
+        return
+        '''
         FHR = [0, 0, 0, 0]
         MHR = [0, 0, 0, 0]
         mother_mv = [0, 0, 0, 0]
+        '''
 
     data_one_sec.append([FHR[0], MHR[0], TOCO, mother_mv[0], SNR, event])
     data_one_sec.append([FHR[1], MHR[1], TOCO, mother_mv[1], SNR, 0])
