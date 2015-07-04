@@ -240,29 +240,7 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
     # ************
     #   connect An24(bd_addr) then recieve data from it
     # ************
-
-    #sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
-    #sock.connect((bd_addr, port))
-    #sock = init_An24.conn(bd_addr)
-    #print '[OK] connecting '
-    #print 'prepare check...'
-    #init_An24.checking(sock)
-    '''
-    while init_An24.checking(sock) != [0, 0, 0, 0, 0]:
-        #check_value = init_check(check_signal(sock))
-        check_value = init_An24.checking(sock)
-        print '[not ok] check', check_value
-        time.sleep(5)
-    check_value = [0, 0, 0, 0, 0]
-    print '[ok] check', check_value
-    '''
-    #print '[start...]'
     sock = init_An24.start(sock)
-    
-    #print '[waiting reply...]'
-    #print '[ok] ready to accept data '
-
-    #output = open('output.txt','a')
     pattern = re.compile(r'1002.*?1003', 
             re.DOTALL)
     lbuf = ''
@@ -276,15 +254,8 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
             #sock ==init_An24.stop(sock)
             sock.close()
             close_data_thread()
-        '''
-        rand = random.randint(0, 10)
-        
-        if rand < 5:
-            print '[ok] send R message'
-            sock.send('\x10\x02N02PCR00000001\x10\x03\x5d\x6f')
-        '''
         buf = sock.recv(65535)
-        
+        '''
         #-- reconnection
         
         if not len(buf):
@@ -292,28 +263,19 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
             buf = sock.recv(65535)
             
             #break
-        
+        '''
         hexbuf = buf.encode('hex')
         lbuf = lbuf + hexbuf                #hex
         #print '-----lbuf:',lbuf
         #regbuf = pattern.findall(lbuf)
         
         for m in pattern.finditer(lbuf):
-            '''
-            print '------------------------------'
-            log('source data:', m.group())
-            print '------------------------------'
-            '''
             print m.group()
             '''
-            if '10024e3032414e474f541003' == m.group():
-                sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
-                sock = init_An24.start(sock)
-            '''
-            #log('electrode:', init_An24.check_value)
             data_one_sec = data_parse(m.group(), run_chk, low_battry, _count_pos)
             if data_one_sec != None:
                 stream_in_cache(data_one_sec, data_cache)
+            '''
             #log( 'cache:', data_cache)
             #print stream_in_cache()
             #print type(data_all)      #tuple

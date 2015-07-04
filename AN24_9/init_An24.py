@@ -37,12 +37,14 @@ def conn(bt_addr="00:80:98:0E:39:77"):
     sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
     try:    
         sock.connect((bt_addr, port))
+        '''
         msg = sock_recv(sock, 24, 24)
         print 'msg:', msg
         if '10024e3032414e474f541003' == msg:
             sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
         else:
             pass
+         '''
     except :
         return False
     return sock 
@@ -67,18 +69,22 @@ def start(sock):
     G = '\x10\x02G\x10\x03\x42\x1f'
     DISN = '\x10\x02N02PCDISN\x10\x03\x58\xfb'
     #DISF = '\x10\x02N02PCDISF1111\x10\x03\xd3\xeb'
-    #UTIME = '\x10\x02N02PCUTIME\x09\x06\x0f\x14\x10\x1a\x1e\x10\x03\xc2\x10'
+    UTIME = '\x10\x02N02PCUTIME471520888\x10\x03\x24\xd6'
     #G = machenPaket()
-    #TIME = '\x10\x02N02PCTIME\x10\x03\x0b\x73'
-    #DATE  = '\x10\x02N02PCDATE\x10\x03\xfb\x0a'
+    TIME = '\x10\x02N02PCTIME\x10\x03\x0b\x73'
+    DATE  = '\x10\x02N02PCDATE\x10\x03\xfb\x0a'
     #print 'G', G
+    '''
     sock.send(DISN)
     print '[ok] setting DISN'
     sock.send(G)
-
-    #print '[ok] utime'
-    #time.sleep(2)
-    #sock.send(DATE)
+    '''
+    print 'utime...'
+    sock.send(UTIME)
+    print '[ok] utime'
+    time.sleep(2)
+    sock.send(DATE)
+    sock.send(TIME)
     return sock
 
 def stop(sock):
@@ -140,7 +146,7 @@ def sock_recv(sock, *str_lens):
         buf = sock.recv(65535)
         if not len(buf):
             break
-    
+        
         hexbuf = buf.encode('hex')
         lbuf = lbuf + hexbuf
         #regbuf = pattern.findall(lbuf)
