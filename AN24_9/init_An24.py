@@ -31,6 +31,7 @@ def is_An24(bt_name):
         return True
     else:
         return False
+import re
 def conn(bt_addr="00:80:98:0E:39:77"):
     port = 1 
     print 'port:', port
@@ -61,7 +62,6 @@ def inquire_date(sock):
     DATE = '\x10\x02NO2PCDATE\x10\x03\xfb\x0a'
     sock.send(DATE)
 '''
-import time
 def start(sock):
     print 'start...'
     print '[waiting reply...]'
@@ -74,9 +74,11 @@ def start(sock):
     TIME = '\x10\x02N02PCTIME\x10\x03\x0b\x73'
     DATE  = '\x10\x02N02PCDATE\x10\x03\xfb\x0a'
     #print 'G', G
-    '''
+    
     sock.send(DISN)
     print '[ok] setting DISN'
+    sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
+    print '[ok] del old data'
     sock.send(G)
     '''
     print 'utime...'
@@ -85,6 +87,7 @@ def start(sock):
     time.sleep(2)
     sock.send(DATE)
     sock.send(TIME)
+    '''
     return sock
 
 def stop(sock):
@@ -144,6 +147,8 @@ def sock_recv(sock, *str_lens):
             len(mgroup)!=str_lens[1] :
         
         buf = sock.recv(65535)
+        if buf == '':
+            return mgroup 
         if not len(buf):
             break
         

@@ -73,7 +73,19 @@ class AN24 (object):
         #return data.start_data_thread(self.sock,self.cache,self.run_chk,self.low_battry)
 
     
-                
+class Patient():
+    def __init__(self, p='', n='', a=0, w=0, o='', h='', b='', g='' ):
+        self.person_num=p
+        self.name = n
+        self.age = a
+        self.weeks = w
+        self.outpatient_num = o
+        self.hospitalization_num = h
+        self.bed_num = b
+        self.guardianship_num = g
+from tcp.client import upload 
+    
+
                  
                 
 if __name__ == "__main__":
@@ -86,6 +98,8 @@ if __name__ == "__main__":
     #init_An24.inquire_date(AN24.sock)
     #init_An24.inquire_time(AN24.sock)
     #init_check_list = AN24.init_chk
+    p = Patient('N0000','zpf',1,2,'aaa','bbb','ccc','ddd')
+    #upload(p)
     AN24.data_recv()
     
          

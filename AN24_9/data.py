@@ -15,8 +15,9 @@ from __builtin__ import reload
 #import types
 from log import log
 import init_An24
-from tcp.client import upload_data
+from tcp.client import upload
 import bt_reconn
+
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
 print '[ok] set default coding:', sys.getdefaultencoding()
@@ -213,10 +214,6 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     data_one_sec.append([FHR[1], MHR[1], TOCO, mother_mv[1], SNR, 0])
     data_one_sec.append([FHR[2], MHR[2], TOCO, mother_mv[2], SNR, 0])
     data_one_sec.append([FHR[3], MHR[3], TOCO, mother_mv[3], SNR, 0])
-    print '------------------------------'
-    log('data_one_sec:', data_one_sec)
-    print '------------------------------'
-    
     if FHR != [0, 0, 0, 0]:                             #rest run_chk
         run_chk[0] = 0
         run_chk[1] = 0
@@ -228,14 +225,16 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     #return FHR, MHR, TOCO, mother_mv, SNR, event
     #upload_data(data_one_sec)
     #updata = ','.join(str(v) for v in FHR)
-    #print 'updata:', updata
-    #upload_data(updata)
+    updata_list = [FHR[0],MHR[0],TOCO,mother_mv[0],SNR,event,
+            FHR[1],MHR[1],TOCO,mother_mv[1],SNR,0,
+            FHR[2],MHR[2],TOCO,mother_mv[2],SNR,0,
+            FHR[3],MHR[3],TOCO,mother_mv[3],SNR,0]
+    updata_str = ','.join(str(v) for v in updata_list)
+    print 'updata:', updata_str,type(updata_str)
+    #upload(None,updata_str) #send data to server
     return data_one_sec
 
 
-#import time
-#check_value = [0, 0, 0, 0, 0]
-#import random
 def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_pos):
     # ************
     #   connect An24(bd_addr) then recieve data from it
@@ -247,7 +246,6 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
     endstr = '1003'
     endpos = 0
     data_one_sec = []
-
     while 1:
                 
         if stop == True:
@@ -255,7 +253,6 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
             sock.close()
             close_data_thread()
         buf = sock.recv(65535)
-        '''
         #-- reconnection
         
         if not len(buf):
@@ -263,19 +260,20 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
             buf = sock.recv(65535)
             
             #break
-        '''
+        
         hexbuf = buf.encode('hex')
         lbuf = lbuf + hexbuf                #hex
         #print '-----lbuf:',lbuf
         #regbuf = pattern.findall(lbuf)
         
         for m in pattern.finditer(lbuf):
-            print m.group()
-            '''
+            #print m.group()
+            
             data_one_sec = data_parse(m.group(), run_chk, low_battry, _count_pos)
+            
             if data_one_sec != None:
                 stream_in_cache(data_one_sec, data_cache)
-            '''
+            
             #log( 'cache:', data_cache)
             #print stream_in_cache()
             #print type(data_all)      #tuple

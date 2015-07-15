@@ -1,8 +1,8 @@
 #!/user/bin/env python
 
 import socket
-host = '192.168.155.2'
-port = 8888
+host = '10.18.19.46'
+port = 2
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error, msg:
