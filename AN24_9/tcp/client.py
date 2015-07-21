@@ -1,6 +1,7 @@
 #!/user/bin/env python
 
 import socket
+import os
 HOST = '192.168.155.3'
 class Patient():
     def __init__(self, p='', n='', a=0, w=0, o='', h='', b='', g='' ):
@@ -12,6 +13,59 @@ class Patient():
         self.hospitalization_num = h
         self.bed_num = b
         self.guardianship_num = g
+
+
+class toServer():
+    def __init__(self):
+        '''sock1:info sock2:data'''
+        self._sock1, self._sock2 = self.conn_server()
+        self.web_stat = 1  # 1:True  0:False
+
+    def conn_server(self):
+        port1, port2 = 1, 2
+        try:
+            s1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        except socket.error, msg:
+            print '[Fail] creat socket(to server)'
+        print '[ok] creat socket(to server)'
+        try:
+            s1.conn((HOST,port1))
+            s2.conn((HOST,port2))
+        except:
+            print '[Fail] connect to server'
+        print '[ok] connect to server'
+        self.web_stat = 0
+        return (s1, s2)
+
+    ''' web_stat = 0 (Fail)'''
+    def patient_to_local(self, patient_info,uuid):
+        with open('../history/%s.info' % uuid,'a+') as f:
+            f.write(patient_info)
+
+    def data_to_local(self,data,uuid):
+        with open('../history/%s.data' % uuid,'a+') as f:
+            f.write(data)
+
+    ''' web_stat = 1 (ok)'''
+    def check_local(self):
+        if not os.listdir('../history/'):
+            self.has_history = 0   # empty florder,no history
+        else:
+            self.has_history = 1
+    
+    def upload_histroy(self):
+        pass
+    def del_histroy(self):
+        pass
+    '''port = 1'''
+    def upload_patient(self):
+        pass
+    def online(self):
+        pass
+    '''port = 2 '''
+    def upload_data(self):
+        pass
 
 def upload_patient(patient):
 
