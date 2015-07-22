@@ -5,15 +5,21 @@
 import data
 import init_An24
 from log import log
-   
+import uuid   
 def scan_bt():
     '''return AN24s dict'''
 
     AN24_dict = init_An24.scan_bluetooth()
     return AN24_dict
 
-class AN24 (object):
+from tcp.client import toServer
+class AN24 (toServer):
     def __init__(self, bt_addr):
+        ########################
+        toServer.__init__(self)
+        self._uuid = str(uuid.uuid1())
+        self.has_history = self.check_local()
+        ########################
         '''Fail return False(type=bool)
         sucess return sock(type=socket)'''
         self._addr = bt_addr
@@ -25,20 +31,14 @@ class AN24 (object):
             self.sock = _sock 
         else:
             raise AttributeError('conn fail, check bluetooth device')
+        
         self.cache = []                #data cache
         self.run_chk = [0, 0, 0, 0, 0]  # checking when running
         self.bt_state = [False]            # bluetooth connection status 
-        self.web_state = [False]         # web connection status
         self.out_of_range = [False]     # whether the person is in range
         self.low_battry = [False]       # the low battry signal
         self.stop = False              # stop recieve data
-        '''
-        self.bt_state
-        self.web_state
         
-        self.id
-        '''
-
     @property
     #return battry(type=float)
     def battry(self):
@@ -83,16 +83,23 @@ class Patient():
         self.hospitalization_num = h
         self.bed_num = b
         self.guardianship_num = g
-from tcp.client import upload 
     
 
                  
                 
 if __name__ == "__main__":
+    p = Patient('N0000','zpf',1,2,'aaa','bbb','ccc','ddd')
     scan_bt()
     AN24 = AN24("00:80:98:0E:39:77")
     #print 'initchk:', AN24.init_chk
     log("connected?", AN24.sock)
+    AN24.conn_server()
+    print 'web_stat:',AN24.web_stat
+    print 'sock1:',AN24._sock1
+    print 'sock2:',AN24._sock2
+    print 'uuid:',AN24._uuid
+    print 'has_history:', AN24.has_history
+    AN24.handle_info(p)
     #battry = AN24.battry
     #init_An24.syn_clk(AN24.sock)
     #init_An24.inquire_date(AN24.sock)
@@ -100,7 +107,7 @@ if __name__ == "__main__":
     #init_check_list = AN24.init_chk
     p = Patient('N0000','zpf',1,2,'aaa','bbb','ccc','ddd')
     #upload(p)
-    AN24.data_recv()
+    #AN24.data_recv()
     
          
 

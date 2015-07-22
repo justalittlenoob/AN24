@@ -15,7 +15,6 @@ from __builtin__ import reload
 #import types
 from log import log
 import init_An24
-from tcp.client import upload
 import bt_reconn
 
 #reload(sys)
