@@ -40,7 +40,7 @@ class handle():
 #-------------------------------------------#
 
 ##----------------------------------
-    def local_info(self, _uuid, content):
+    def local_info(self, _uuid, content):#write to json
         with open(FILE_INFO % self._uuid,'a+') as f:
             f.write(str(content.__dict__))
     def local_data(self, _uuid, content):
@@ -66,12 +66,12 @@ class handle():
 ##---------------------------------##
 
 ###---------------------
-    def upload_current_info(self, _uuid, content):
+    def upload_current_info(self, _uuid, content): 
         pass
     def upload_current_data(self, _uuid, content):
         pass
 ###---------------------
-    def upload_history_info(self, _uuid):
+    def upload_history_info(self, _uuid): #parse json file
         pass
     def upload_history_data(self, _uuid):
         pass
@@ -82,4 +82,4 @@ class handle():
     def delete_history_data(self, _uuid):
         if os.path.exists(FILE_DATA % self._uuid):
             os.remove(FILE_DATA % self._uuid)
-
+###-------------------###
