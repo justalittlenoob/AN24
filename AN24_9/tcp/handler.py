@@ -17,6 +17,15 @@ class Handler():
     def __init__(self,_uuid,sock):
         self._uuid = _uuid
         self._sock = self.creat_link()
+    
+    @property
+    def handshake(self):
+        self._sock.send('SYN')
+        buf = self._sock.recv(1024)
+        if buf == 'SYN+ACK':
+            return 1
+        else:
+            return 0
 
     @property
     def has_history(self):

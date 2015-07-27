@@ -1,7 +1,7 @@
 import socket
 
-HOST = '192.168.155.3'
-PORT = 1
+HOST = '192.168.155.2'
+PORT = 11001
 PATH = 'D:/WorkSpace/Github/AN24_9/history'
 FILE_INFO = 'D:/WorkSpace/Github/AN24_9/history/%s.info'
 FILE_DATA = 'D:/WorkSpace/Github/AN24_9/history/%s.data'
@@ -9,7 +9,7 @@ WEB_STAT = 0
 
 class client_p():
     def __init__(self):
-        self._sock = self.conn_server()
+        self._sock = self.build_connection()
 #----------------------------------------------
     def build_connection(self):
         try:
@@ -29,10 +29,17 @@ class client_p():
 #----------------------------------------------
     def handshake(self):
         global WEB_STAT
-        self._sock.send('SYN')
+        self._sock.send('SYN\r\n')
+        print '[ok] send SYN'
         buf = self._sock.recv(1024)
-        if buf == 'SYN+ACK':
+        print '[ok] recv:', buf
+        if buf == 'SYN+ACK=1\r\n':
             WEB_STAT = 1
         else:
             WEB_STAT = 0
-#---------------------------------------------##
+##---------------------------------------------##
+if '__main__' == __name__:
+    print 'WEB_STAT(init):', WEB_STAT
+    p = client_p()
+    p.handshake()
+    print 'WEB_STAT(handshake):', WEB_STAT
