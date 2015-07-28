@@ -14,6 +14,12 @@ class Handler():
     def __init__(self,_uuid):
         self._uuid = _uuid
         self._sock = self.creat_link()
+        try:
+            self._sock.send('UUID'+_uuid + '\r\n')
+        except:
+            pass
+        self.handle_history()
+
     ''' 
     @property
     def handshake(self):
@@ -37,11 +43,11 @@ class Handler():
             return 1        # has history
             
     def handle(self, content, tag): #tag=0:info;tag=1:data
-        self.local(content, tag)
         if 0 == WEB_STAT:
-           pass 
+           self.local(content, tag) 
         else:
             self.roaming(content, tag)
+
 #-------------------------------------------
     def creat_link(self):
         try:
@@ -67,21 +73,16 @@ class Handler():
 #-----------------------------------------
     def roaming(self, content, tag):
         self.upload_current(content, tag)
-        if 1 == self.has_history:    #has histroy
-            #new thread
-            #self.upload_history(_uuid, tag)
-            #self.delete_history(_uuid, tag)
-            threading.Thread(target=self.handle_history,
-                    args=(tag,)
-                    ).start()
+        #self.local(content, tag)
+        
+#-------------------------------------------#
+##---------------------------------
+    def handle_history(self):
+        if WEB_STAT and self.has_history:
+            self.upload_history_info()
+            self.upload_history_data()
         else:
             pass
-    
-#-------------------------------------------#
-##----------------------------------
-    def handle_history(self, tag):
-        self.upload_history(tag)
-        #self.delete_history(tag)
 ##----------------------------------
     def local_info(self, content):#write to json
         with open(FILE_INFO % self._uuid,'a+') as f:
@@ -97,11 +98,6 @@ class Handler():
         else:
             self.upload_current_data(content)
 
-    def upload_history(self, tag):
-        if 0 == tag:
-            self.upload_history_info()
-        else:
-            self.upload_history_data()
 ##----------------------------------
     def delete_history(self,filename, tag):
         if 0 == tag:
@@ -112,26 +108,27 @@ class Handler():
 
 ###---------------------
     def upload_current_info(self, content): 
-        self._sock.send(str(content.__dict__)+'\r\n')
-
+        self._sock.send('CINFO'+str(content.__dict__)+'\r\n')
     def upload_current_data(self, content):
-        self._sock.send(content)
+        self._sock.send('CDATA'+content+'\r\n')
 ###---------------------
     def upload_history_info(self): #parse json file
         files = self.traversal()[0]
         for _file in files:
             with open(FILE_INFO % _file,'r') as f:
+                self._sock.send('HIST_INFO'+_file + '\r\n')
                 dic = json.loads(f.read())
-                self._sock.send(str(dic)+'\r\n')
+                self._sock.send('HINFO'+str(dic)+'\r\n')
             self.delete_history_info(_file)
 
     def upload_history_data(self):
         files = self.traversal()[1]
         for _file in files:
-            with open(FILE_INFO % _file,'r') as f:
+            self._sock.send('HIST_DATA'+_file + '\r\n')
+            with open(FILE_DATA % _file,'r') as f:
                 lines = f.readlines()
                 for line in lines:
-                    self._sock.send(line)
+                    self._sock.send('HDATA'+line+'\r\n')
             self.delete_history_data(_file)
 
 ###---------------------
@@ -146,10 +143,9 @@ class Handler():
 
 ####-----------------------------
     def traversal(self):
-        if self.has_history:
-            for parent, dirname, filenames in os.walk(PATH):
-                files_info = [info[:-5] for info in filenames if info[-4:]=='info'] 
-                files_data = [data[:-5] for data in filenames if data[-4:]=='data']
+        for parent, dirname, filenames in os.walk(PATH):
+            files_info = [info[:-5] for info in filenames if info[-4:]=='info'] 
+            files_data = [data[:-5] for data in filenames if data[-4:]=='data']
         return files_info, files_data
 ####-------------------------####    
 
@@ -165,11 +161,17 @@ class Patient():
         self.guardianship_num = g
 
 if '__main__' == __name__:
-    h = Handler('15e868de-3457-11e5-aa75-1078d2f63bb4')
-    p = Patient('S201325016','zpf','27','1','2','424243adf','9483','1')
+    h = Handler('16e868de-3457-11e5-aa75-1078d2f63bb4')
+    p = Patient('S201325016','zzzzpf','27','1','2','424243adf','9483','1')
+    data1 = '1002AAAAAAAAAAAA1003'
+    data2 = '1002BBBBBBBB1003'
+    data3 = '1002CCCCCCCCCCCCCCCCCCC1003'
     #print 'handshake:', h.handshake
     print 'WEB_STAT:', WEB_STAT
     print 'hashistory:', h.has_history
+    h.handle(data1,1)
+    h.handle(data2,1)
+    h.handle(data3,1)
     h.handle(p,0)
     
 
