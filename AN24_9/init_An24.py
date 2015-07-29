@@ -77,8 +77,8 @@ def start(sock):
     
     sock.send(DISN)
     print '[ok] setting DISN'
-    sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
-    print '[ok] del old data'
+    #sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
+    #print '[ok] del old data'
     sock.send(G)
     '''
     print 'utime...'

@@ -3,9 +3,7 @@
 import socket
 import os
 import json
-import threading
 from __init__ import WEB_STAT, HOST, PORT
-
 PATH = 'D:/WorkSpace/Github/AN24_9/history'
 FILE_INFO = 'D:/WorkSpace/Github/AN24_9/history/%s.info'
 FILE_DATA = 'D:/WorkSpace/Github/AN24_9/history/%s.data' 
@@ -17,6 +15,7 @@ class Handler():
         try:
             self._sock.send('UUID'+_uuid + '\r\n')
         except:
+            print 'UUID is not send'
             pass
         self.handle_history()
 
@@ -60,6 +59,8 @@ class Handler():
             s.connect((HOST, PORT))
         except Exception, msg:
             print msg
+            global WEB_STAT
+            WEB_STAT = 0
             print '[Fail] link to server'
         else:
             print '[ok] link to server'
@@ -161,11 +162,11 @@ class Patient():
         self.guardianship_num = g
 
 if '__main__' == __name__:
-    h = Handler('16e868de-3457-11e5-aa75-1078d2f63bb4')
-    p = Patient('S201325016','zzzzpf','27','1','2','424243adf','9483','1')
-    data1 = '1002AAAAAAAAAAAA1003'
-    data2 = '1002BBBBBBBB1003'
-    data3 = '1002CCCCCCCCCCCCCCCCCCC1003'
+    h = Handler('20e868de-3457-11e5-aa75-1078d2f63bb4')
+    p = Patient('S201325016','zzzzpfnew','27','1','2','424243adf','9483','1')
+    data1 = '1002newAAAAAAAAAAAA1003'
+    data2 = '1002newBBBBBBBB1003'
+    data3 = '1002newCCCCCCCCCCCCCCCCCCC1003'
     #print 'handshake:', h.handshake
     print 'WEB_STAT:', WEB_STAT
     print 'hashistory:', h.has_history

@@ -12,13 +12,10 @@ def scan_bt():
     AN24_dict = init_An24.scan_bluetooth()
     return AN24_dict
 
-from tcp.client import toServer
-class AN24 (toServer):
+class AN24 ():
     def __init__(self, bt_addr):
         ########################
-        toServer.__init__(self)
         self._uuid = str(uuid.uuid1())
-        self.has_history = self.check_local()
         ########################
         '''Fail return False(type=bool)
         sucess return sock(type=socket)'''
@@ -58,8 +55,8 @@ class AN24 (toServer):
         self.run_chk = [0, 0, 0, 0, 0]    
 
     '''start a thread to recv data'''
-    def data_recv(self):
-        data.start_data_thread(self.sock,self.cache,self.run_chk,self.low_battry,self.stop,self._addr,self._count_pos)
+    def data_recv(self,handle):
+        data.start_data_thread(self.sock,self.cache,self.run_chk,self.low_battry,self.stop,self._addr,self._count_pos,handle)
 
     def stop_recv(self):
         self.stop = True
@@ -86,28 +83,24 @@ class Patient():
     
 
                  
-                
+from tcp.handler import Handler     
+from tcp.__init__ import WEB_STAT
 if __name__ == "__main__":
-    p = Patient('N0000','zpf',1,2,'aaa','bbb','ccc','ddd')
     scan_bt()
     AN24 = AN24("00:80:98:0E:39:77")
+    h = Handler(AN24._uuid)
     #print 'initchk:', AN24.init_chk
     log("connected?", AN24.sock)
-    AN24.conn_server()
-    print 'web_stat:',AN24.web_stat
-    print 'sock1:',AN24._sock1
-    print 'sock2:',AN24._sock2
-    print 'uuid:',AN24._uuid
-    print 'has_history:', AN24.has_history
-    AN24.handle_info(p)
     #battry = AN24.battry
     #init_An24.syn_clk(AN24.sock)
     #init_An24.inquire_date(AN24.sock)
     #init_An24.inquire_time(AN24.sock)
     #init_check_list = AN24.init_chk
-    p = Patient('N0000','zpf',1,2,'aaa','bbb','ccc','ddd')
-    #upload(p)
-    #AN24.data_recv()
+    p = Patient('S201325016','zzzzpf','27','1','2','424243adf','9483','1')
+    h.handle(p,0)
+    print 'WEB_STAT:', WEB_STAT
+    print 'hashistory:', h.has_history
+    AN24.data_recv(h.handle)
     
          
 

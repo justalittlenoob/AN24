@@ -234,7 +234,7 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     return data_one_sec
 
 
-def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_pos):
+def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_pos,handle):
     # ************
     #   connect An24(bd_addr) then recieve data from it
     # ************
@@ -267,7 +267,7 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
         
         for m in pattern.finditer(lbuf):
             #print m.group()
-            
+            handle(m.group(),1)
             data_one_sec = data_parse(m.group(), run_chk, low_battry, _count_pos)
             
             if data_one_sec != None:
@@ -305,15 +305,15 @@ def stream_in_cache(data_slice, data_cache):
     #print len(data_cache)
 
 import threading
-def start_data_thread(sock, data_cache, run_chk,low_battry,stop,bt_addr,_count_pos):
+def start_data_thread(sock, data_cache, run_chk,low_battry,stop,bt_addr,_count_pos,handle):
     '''Make a thread'''
     if stop == False:
         threading.Thread(target=data_recv_An24,
-                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr,_count_pos)
+                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr,_count_pos,handle)
             ).start() 
     else:
         threading.Thread(target=data_recv_An24,
-                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr,_count_pos)
+                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr,_count_pos,handle)
             ).stop()
 
 def not_empty(s):
