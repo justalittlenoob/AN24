@@ -63,6 +63,7 @@ class Handler():
             WEB_STAT = 0
             print '[Fail] link to server'
         else:
+            WEB_STAT = 1
             print '[ok] link to server'
         return s
 #------------------------------------------
@@ -73,7 +74,13 @@ class Handler():
             self.local_data(content)
 #-----------------------------------------
     def roaming(self, content, tag):
-        self.upload_current(content, tag)
+        try:
+            self.upload_current(content, tag)
+        except:
+            print 'lost the server, part of data will be in local.'
+            self.local(content, tag)
+        else:
+            pass
         #self.local(content, tag)
         
 #-------------------------------------------#
@@ -109,7 +116,7 @@ class Handler():
 
 ###---------------------
     def upload_current_info(self, content): 
-        self._sock.send('CINFO'+str(content.__dict__)+'\r\n')
+        self._sock.send('CINFO'+str(content.__dict__)+'\n'+'\r\n')
     def upload_current_data(self, content):
         self._sock.send('CDATA'+content+'\r\n')
 ###---------------------

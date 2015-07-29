@@ -96,7 +96,7 @@ if __name__ == "__main__":
     #init_An24.inquire_date(AN24.sock)
     #init_An24.inquire_time(AN24.sock)
     #init_check_list = AN24.init_chk
-    p = Patient('S201325016','zzzzpf','27','1','2','424243adf','9483','1')
+    p = Patient('lose','zzzzpf','27','1','2','424243adf','9483','1')
     h.handle(p,0)
     print 'WEB_STAT:', WEB_STAT
     print 'hashistory:', h.has_history
