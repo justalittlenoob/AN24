@@ -1,7 +1,6 @@
 #!/usr/b in/env pytho n
 #-*- coding: UTF-8 -*-
 import bluetooth
-from synclk.crc import machenPaket
 def scan_bluetooth():
     print("performing inquiry...")
     An24_menu = {}
