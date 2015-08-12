@@ -16,11 +16,11 @@ p = client_p()
 p.handshake()
 
 class Handler():
-    def __init__(self,_uuid):
+    def __init__(self,_uuid,_name):
         self._uuid = _uuid
         self._sock = self.creat_link()
         try:
-            self._sock.send('UUID'+_uuid + '\r\n')
+            self._sock.send('UUID'+_uuid + 'NAME'+ _name + '\r\n')
         except:
             print 'UUID is not send'
             pass
@@ -68,11 +68,11 @@ class Handler():
             s.settimeout(None)
         except Exception, msg:
             print msg
-            #global WEB_STAT
-            #WEB_STAT = 0
+            global WEB_STAT
+            WEB_STAT = 0
             print '[Fail] link to server'
         else:
-            #WEB_STAT = 1
+            WEB_STAT = 1
             print '[ok] link to server'
         return s
 #------------------------------------------
@@ -103,8 +103,8 @@ class Handler():
 ##----------------------------------
     def local_info(self, content):#write to json
         with open(FILE_INFO % self._uuid,'w+') as f:
-            #f.write(json.dumps(content.__dict__, sort_keys=True, indent=4))
-            f.write(json.dumps(content, sort_keys=True, indent=4))
+            f.write(json.dumps(content.__dict__, sort_keys=True, indent=4))
+            #f.write(json.dumps(content, sort_keys=True, indent=4))
 
     def local_data(self, content):
         with open(FILE_DATA % self._uuid,'a+') as f:
@@ -126,8 +126,8 @@ class Handler():
 
 ###---------------------
     def upload_current_info(self, content): 
-        #self._sock.send('CINFO'+str(content.__dict__)+'\n'+'\r\n')
-        self._sock.send('CINFO'+str(content)+'\n'+'\r\n')
+        self._sock.send('CINFO'+str(content.__dict__)+'\n'+'\r\n')
+        #self._sock.send('CINFO'+str(content)+'\n'+'\r\n')
     def upload_current_data(self, content):
         self._sock.send('CDATA'+content+'\r\n')
 ###---------------------

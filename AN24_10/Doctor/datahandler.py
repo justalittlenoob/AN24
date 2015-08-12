@@ -1,6 +1,6 @@
 import socket
-HOST = '192.168.155.2'
-PORT = 11000
+import re
+from doctor import DoctorClient, HOST, PORT
 CBLOCK_STR_LEN = 76
 COUNT_STR_LEN = 54    #count block
 NBLOCK_STR_LEN = 36
@@ -10,7 +10,7 @@ TOTO_RESOLUTION = 0.5
 SNR = 0.0
 ELECTRODE_STR_LEN = 20
 class DataHandler():
-    def __init__(self, _uuid):
+    def __init__(self):
         self._sock = self.creat_link()
         self.info = {}
         self.data = []
@@ -38,18 +38,29 @@ class DataHandler():
 #---------------------------
     def download(self, _uuid):
         try:
-            self._sock.send('DCPD' + '\r\n')#DCPD=Download Current Patient Data
+            self._sock.send('DCPD' + _uuid + '\r\n')#DCPD=Download Current Patient Data
         except Exception, msg:
             print msg
             print '[Fail] send download current patient data request'
         else:
             print '[ok] send download current patient data request'
+        lbuf = ''
+        endstr ='1003'
         while 1:
+            pattern = re.compile(r'1002.*?1003', re.DOTALL)
             buf = self._sock.recv(65535)
+
             if buf[:5] == 'CINFO':
                 self.info = eval(buf[5:])
             else:
-                self.handle_data(buf)
+                lbuf = lbuf + buf
+                for m in pattern.finditer(lbuf):
+                    print '[raw data:]', m.group()
+                    self.handle_data(m.group())
+                while endstr in lbuf:
+                    endpos = lbuf.index(endstr) + 4 
+                    lbuf = lbuf[endpos:]    
+                    
 #----------------------------
 ##---------------------------
     def syn_info(self, patient_info):
@@ -182,7 +193,7 @@ class DataHandler():
             self.run_chk[3] = 0
             self.run_chk[4] = 0
         print 'run_chk:', self.run_chk
-
+        print 'data_one_sec:', data_one_sec
         for data_os in data_one_sec:
             self.data.append(data_os)
 
@@ -246,5 +257,10 @@ def run_check(electrode_str, run_chk):
         pass
     return run_chk
 
-            
+if '__main__' == __name__:
+    dh = DataHandler()
+    dc = DoctorClient()
+    #print 'online_patient.items[0][0]', dc.online_patient.items[0][0]
+    dh.download('a88c3ea1-3ffc-11e5-a6fb-1078d2f63bb4')
+
 

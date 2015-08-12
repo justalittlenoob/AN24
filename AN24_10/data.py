@@ -219,8 +219,8 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
         run_chk[2] = 0
         run_chk[3] = 0
         run_chk[4] = 0
-        
-    log('run_chk', run_chk)
+    log('data_one_sec:', data_one_sec)    
+    log('run_chk:', run_chk)
     return data_one_sec
 
 

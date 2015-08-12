@@ -1,11 +1,15 @@
 import socket
-
-HOST = '192.168.155.2'
-PORT = 11000
+import ConfigParser
+config = ConfigParser.ConfigParser()
+config.read('conf.ini')
+HOST = config.get('Server', 'HOST')
+PORT = config.getint('Server', 'PORT')
+print HOST,PORT
 class DoctorClient():
     def __init__(self):
         self._sock = self.build_connection()
-        self._online = self.d_online()
+        #self._online = self.d_online()
+        self.online_patient = self.get_online_p()
 #----------------------------
     def build_connection(self):
         try:
@@ -37,15 +41,19 @@ class DoctorClient():
 #----------------------------
     def get_online_p(self):
         try:
-            self._sock.send('GOP' + '\r\n')# GOP = Get Online Patient
+            self._sock.send('GOP' + '\r\n')# GOP = Get Online Patients
         except Exception, msg:
             print msg
             print '[Fail] send get online patient request'
         else:
             print '[ok] send get online patient request'
         buf = self._sock.recv(65535) 
-        return buf
+        online_patients = eval(buf)
+        print 'online_patients:', online_patients
+        print 'type of online_patientsd:', type(online_patients)
+        return online_patients
 
-
-
+if '__main__' == __name__:
+    d = DoctorClient()
+    print 'online patient:', d.online_patient
             

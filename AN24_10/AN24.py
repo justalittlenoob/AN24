@@ -11,9 +11,11 @@ def scan_bt():
 
     AN24_dict = init_An24.scan_bluetooth()
     return AN24_dict
-
+    
 class AN24 ():
-    def __init__(self, bt_addr):
+    def __init__(self, an24):
+        bt_addr = an24.items()[0][1]
+        self._name = an24.items()[0][0]
         ########################
         self._uuid = str(uuid.uuid1())
         ########################
@@ -87,9 +89,9 @@ if __name__ == "__main__":
     from tcp.handler import Handler     
     from tcp.__init__ import WEB_STAT
 
-    scan_bt()
-    AN24 = AN24("00:80:98:0E:39:77")
-    h = Handler(AN24._uuid)
+    #scan_bt()
+    AN24 = AN24({'AN24 A001350':'00:80:98:0E:39:77'})
+    h = Handler('a88c3ea1-3ffc-11e5-a6fb-1078d2f63bb4', AN24._name)
     #print 'initchk:', AN24.init_chk
     log("connected?", AN24.sock)
     #battry = AN24.battry

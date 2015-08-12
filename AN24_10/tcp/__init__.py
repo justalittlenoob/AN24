@@ -34,7 +34,6 @@ class client_p():
         return s
 #----------------------------------------------
     def handshake(self):
-        global WEB_STAT
         try:
 
             self._sock.send('SYN\r\n')
@@ -42,10 +41,11 @@ class client_p():
             buf = self._sock.recv(1024)
             print '[ok] recv:', buf
             if buf == 'SYN+ACK=1\r\n':
+                global WEB_STAT
                 WEB_STAT = 1
                 self._sock.close()
             else:
-                WEB_STAT = 0
+                pass
         except:
             pass
 #p = client_p()

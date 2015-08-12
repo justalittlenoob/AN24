@@ -86,7 +86,7 @@ class Patient():
 from tcp.handler import Handler     
 from tcp.__init__ import WEB_STAT
 if __name__ == "__main__":
-    scan_bt()
+    #scan_bt()
     AN24 = AN24("00:80:98:0E:39:77")
     h = Handler(AN24._uuid)
     #print 'initchk:', AN24.init_chk
