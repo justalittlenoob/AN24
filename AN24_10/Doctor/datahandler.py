@@ -63,8 +63,8 @@ class DataHandler():
                     
 #----------------------------
 ##---------------------------
-    def syn_info(self, patient_info):
-        self._sock.send('SYNI' + str(patient_info) + '\r\n')#SYNI=SYN Info
+    def syn_info(self, patient_info, _uuid):
+        self._sock.send('UUID'+ _uuid +'SYNI' + str(patient_info) + '\r\n')#SYNI=SYN Info
 ##---------------------------
     def handle_data(self, cblock_str):
         mm = '10024d4d1003'                 # MM block

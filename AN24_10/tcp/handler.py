@@ -19,6 +19,7 @@ class Handler():
     def __init__(self,_uuid,_name):
         self._uuid = _uuid
         self._sock = self.creat_link()
+        self.syni = {}
         try:
             self._sock.send('UUID'+_uuid + 'NAME'+ _name + '\r\n')
         except:
@@ -52,7 +53,15 @@ class Handler():
         if 0 == WEB_STAT:
            self.local(content, tag) 
         else:
-            self.roaming(content, tag)
+            buf = self._sock.recv(65535)
+            if not len(buf):
+                self.roaming(content, tag)
+            elif buf[40:44] == 'SYNI':
+                self.syni ==eval(buf[44:]) #if not null,read it then make it null,if null pass
+                self.roaming(content, tag)
+            else:
+                pass
+                
 
 #-------------------------------------------
     def creat_link(self):
