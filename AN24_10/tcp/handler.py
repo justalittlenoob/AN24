@@ -1,11 +1,13 @@
 #!/user/bin/env python
-
+import select
 import socket
 import os
 import json
-from __init__ import WEB_STAT, HOST, PORT, client_p
+import __init__
+from __init__ import  HOST, PORT, client_p
 import ConfigParser
 
+WEB_STAT = __init__.WEB_STAT
 config = ConfigParser.ConfigParser()
 config.read('D:/WorkSpace/Github/AN24_10/tcp/conf/conf.ini')
 PATH = config.get('History Files', 'PATH')
@@ -20,6 +22,7 @@ class Handler():
         self._uuid = _uuid
         self._sock = self.creat_link()
         self.syni = {}
+
         try:
             self._sock.send('UUID'+_uuid + 'NAME'+ _name + '\r\n')
         except:
@@ -44,27 +47,32 @@ class Handler():
 
     @property
     def has_history(self):
+        '''
         if not os.listdir(PATH):
             return 0        #no history
         else:
             return 1        # has history
-            
+        '''
+        return os.listdir(PATH) and 1 or 0    
+
     def handle(self, content, tag): #tag=0:info;tag=1:data
         if 0 == WEB_STAT:
            self.local(content, tag) 
         else:
-            buf = self._sock.recv(65535)
-            if not len(buf):
+            rs, ws, es = select.select([self._sock,], [self._sock], [], 5)
+            if self._sock in rs:
+                buf = self._sock.recv(1024)
+                if buf[40:44] == 'SYNI':
+                    self.syni == eval(buf[44:]) #if not null,read it then make it null,if null pass
+                    print 'self.syni(SYNI):', self.syni
+            if self._sock in ws:
                 self.roaming(content, tag)
-            elif buf[40:44] == 'SYNI':
-                self.syni ==eval(buf[44:]) #if not null,read it then make it null,if null pass
-                self.roaming(content, tag)
-            else:
-                pass
+
                 
 
 #-------------------------------------------
     def creat_link(self):
+        global WEB_STAT
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error:
@@ -75,9 +83,10 @@ class Handler():
             s.settimeout(2)
             s.connect((HOST, PORT))
             s.settimeout(None)
+            s.setblocking(0)
         except Exception, msg:
             print msg
-            global WEB_STAT
+            
             WEB_STAT = 0
             print '[Fail] link to server'
         else:
@@ -86,10 +95,13 @@ class Handler():
         return s
 #------------------------------------------
     def local(self, content, tag):  #tag=0:info;tag=1:data
+        '''
         if 0 == tag:
             self.local_info(content)
         else:
             self.local_data(content)
+        '''
+        self.local_data(content) if tag else self.local_info(content)
 #-----------------------------------------
     def roaming(self, content, tag):
         try:
@@ -111,6 +123,8 @@ class Handler():
             pass
 ##----------------------------------
     def local_info(self, content):#write to json
+        self.syni = content.__dict__
+        print 'self.syni(Local):', self.syni
         with open(FILE_INFO % self._uuid,'w+') as f:
             f.write(json.dumps(content.__dict__, sort_keys=True, indent=4))
             #f.write(json.dumps(content, sort_keys=True, indent=4))
@@ -119,22 +133,35 @@ class Handler():
         with open(FILE_DATA % self._uuid,'a+') as f:
             f.writelines('%s\n' % content)
 ##----------------------------------
+
     def upload_current(self, content, tag):
+        '''
         if 0 == tag:
             self.upload_current_info(content)
         else:
             self.upload_current_data(content)
+        '''
+        self.upload_current_data(content) if tag else \
+                self.upload_current_data(content)
 
 ##----------------------------------
+
     def delete_history(self,filename, tag):
+        '''
         if 0 == tag:
             self.delete_history_info(filename)
         else:
             self.delete_history_data(filename)
+        '''
+        self.delete_history_data(filename) if tag else \
+                self.delete_history_info(filename)
+
 ##---------------------------------##
 
 ###---------------------
     def upload_current_info(self, content): 
+        self.syni = content.__dict__
+        print 'self.syni(Current):', self.syni
         self._sock.send('CINFO'+str(content.__dict__)+'\n'+'\r\n')
         #self._sock.send('CINFO'+str(content)+'\n'+'\r\n')
     def upload_current_data(self, content):

@@ -46,25 +46,44 @@ class DataHandler():
             print '[ok] send download current patient data request'
         lbuf = ''
         endstr ='1003'
+        count = 0 #test
+        num = 0   #test
         while 1:
             pattern = re.compile(r'1002.*?1003', re.DOTALL)
             buf = self._sock.recv(65535)
 
             if buf[:5] == 'CINFO':
                 self.info = eval(buf[5:])
+                print 'CINFO:', self.info
             else:
+                count = count + 1  #test
+                num = num + 1     #test
                 lbuf = lbuf + buf
                 for m in pattern.finditer(lbuf):
-                    print '[raw data:]', m.group()
+                    #print '[raw data:]', m.group()
                     self.handle_data(m.group())
                 while endstr in lbuf:
                     endpos = lbuf.index(endstr) + 4 
-                    lbuf = lbuf[endpos:]    
-                    
+                    lbuf = lbuf[endpos:] 
+                ###########test
+                if count == 3:
+                    p = Patient('lose','fromDoctor:%s' % num,'27','1','2','424243adf','9483','1')
+                    self.syn_info(p, _uuid)
+                    print 'count3:', p.__dict__
+                if count == 5:
+                    p = Patient('Doctor:%s' % num,'fromDoctor:%s' % num,'27','1','2','424243adf','9483','1')
+                    self.syn_info(p, _uuid)
+                    print 'count5:', p.__dict__
+                    count = 0
+                else:
+                    pass
+                ###########    
 #----------------------------
 ##---------------------------
     def syn_info(self, patient_info, _uuid):
-        self._sock.send('UUID'+ _uuid +'SYNI' + str(patient_info) + '\r\n')#SYNI=SYN Info
+        self._sock.send('UUID'+ _uuid +'SYNI' + str(patient_info.__dict__) + '\r\n')#SYNI=SYN Info
+        print 'syn_info,UUID:', _uuid
+        print 'syn_info,patient_info:', str(patient_info.__dict__)
 ##---------------------------
     def handle_data(self, cblock_str):
         mm = '10024d4d1003'                 # MM block
@@ -193,7 +212,7 @@ class DataHandler():
             self.run_chk[3] = 0
             self.run_chk[4] = 0
         print 'run_chk:', self.run_chk
-        print 'data_one_sec:', data_one_sec
+        #print 'data_one_sec:', data_one_sec
         for data_os in data_one_sec:
             self.data.append(data_os)
 
@@ -257,10 +276,24 @@ def run_check(electrode_str, run_chk):
         pass
     return run_chk
 
+
+class Patient():
+    def __init__(self, p='', n='', a=0, w=0, o='', h='', b='', g='' ):
+        self.person_num=p
+        self.name = n
+        self.age = a
+        self.weeks = w
+        self.outpatient_num = o
+        self.hospitalization_num = h
+        self.bed_num = b
+        self.guardianship_num = g
+
+
 if '__main__' == __name__:
     dh = DataHandler()
     dc = DoctorClient()
     #print 'online_patient.items[0][0]', dc.online_patient.items[0][0]
     dh.download('a88c3ea1-3ffc-11e5-a6fb-1078d2f63bb4')
+
 
 
