@@ -1,6 +1,6 @@
 #!/usr/b in/env pytho n
 #-*- coding: UTF-8 -*-
-
+# coding=utf-8
 
 import data
 import init_An24
@@ -88,7 +88,7 @@ class Patient():
 if __name__ == "__main__":
     from tcp.handler import Handler     
     from tcp.__init__ import WEB_STAT
-
+    import time
     #scan_bt()
     AN24 = AN24({'AN24 A001350':'00:80:98:0E:39:77'})
     h = Handler('a88c3ea1-3ffc-11e5-a6fb-1078d2f63bb4', AN24._name)
@@ -100,6 +100,13 @@ if __name__ == "__main__":
     #init_An24.inquire_time(AN24.sock)
     #init_check_list = AN24.init_chk
     p = Patient('lose','zzzzpf','27','1','2','424243adf','9483','1')
+    n1 = ['2015:08:08','175',u'这是一个测试']
+    n2 = ['2015:09:09','50', '111111']
+    print 'sleeping...'
+    time.sleep(5)
+    print 'begin...'
+    h.handle(n1,2)
+    h.handle(n2,2)
     h.handle(p,0)
     print 'WEB_STAT:', WEB_STAT
     print 'hashistory:', h.has_history

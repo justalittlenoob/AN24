@@ -13,6 +13,7 @@ class DataHandler():
     def __init__(self):
         self._sock = self.creat_link()
         self.info = {}
+        self.note = []
         self.data = []
         self.run_chk = [0,0,0,0,0]
         self.low_battry = [False]
@@ -46,38 +47,34 @@ class DataHandler():
             print '[ok] send download current patient data request'
         lbuf = ''
         endstr ='1003'
-        count = 0 #test
-        num = 0   #test
+        '''
+        count = 0 #test syn info
+        num = 0   #test syn info
+        '''
         while 1:
             pattern = re.compile(r'1002.*?1003', re.DOTALL)
             buf = self._sock.recv(65535)
+            #print '------buf:', buf
 
             if buf[:5] == 'CINFO':
                 self.info = eval(buf[5:])
                 print 'CINFO:', self.info
+
             else:
-                count = count + 1  #test
-                num = num + 1     #test
                 lbuf = lbuf + buf
                 for m in pattern.finditer(lbuf):
                     #print '[raw data:]', m.group()
-                    self.handle_data(m.group())
+                    if m.group()[4:9] == 'CNOTE':
+                        print 'm[cnote]', m.group()
+                        note = eval(m.group()[9:-4])
+                        self.note.append(note)
+                        print 'CNOTE:', self.note
+                    else:
+                        self.handle_data(m.group())
                 while endstr in lbuf:
                     endpos = lbuf.index(endstr) + 4 
                     lbuf = lbuf[endpos:] 
-                ###########test
-                if count == 3:
-                    p = Patient('lose','fromDoctor:%s' % num,'27','1','2','424243adf','9483','1')
-                    self.syn_info(p, _uuid)
-                    print 'count3:', p.__dict__
-                if count == 5:
-                    p = Patient('Doctor:%s' % num,'fromDoctor:%s' % num,'27','1','2','424243adf','9483','1')
-                    self.syn_info(p, _uuid)
-                    print 'count5:', p.__dict__
-                    count = 0
-                else:
-                    pass
-                ###########    
+
 #----------------------------
 ##---------------------------
     def syn_info(self, patient_info, _uuid):
@@ -97,7 +94,7 @@ class DataHandler():
         #init_An24.run_check(cblock_str)
         if (len(cblock_str) == COUNT_STR_LEN) and ('41' == cblock_str[14:16]):
                 self._count_pos[0] = cblock_str[16:32]
-                print '_count_pos:', self._count_pos
+                #print '_count_pos:', self._count_pos
                 return 
 
         if(len(cblock_str) == CBLOCK_STR_LEN):
@@ -211,7 +208,7 @@ class DataHandler():
             self.run_chk[2] = 0
             self.run_chk[3] = 0
             self.run_chk[4] = 0
-        print 'run_chk:', self.run_chk
+        #print 'run_chk:', self.run_chk
         #print 'data_one_sec:', data_one_sec
         for data_os in data_one_sec:
             self.data.append(data_os)

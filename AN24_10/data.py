@@ -99,7 +99,7 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     #init_An24.run_check(cblock_str)
     if (len(cblock_str) == COUNT_STR_LEN) and ('41' == cblock_str[14:16]):
             _count_pos[0] = cblock_str[16:32]
-            print '_count_pos:', _count_pos
+            #print '_count_pos:', _count_pos
             return 
 
     if(len(cblock_str) == CBLOCK_STR_LEN):
@@ -220,7 +220,7 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
         run_chk[3] = 0
         run_chk[4] = 0
     #log('data_one_sec:', data_one_sec)    
-    log('run_chk:', run_chk)
+    #log('run_chk:', run_chk)
     return data_one_sec
 
 

@@ -1,4 +1,6 @@
 #!/user/bin/env python
+#-*- coding: UTF-8 -*-
+# coding=utf-8
 import select
 import socket
 import os
@@ -13,6 +15,7 @@ config.read('D:/WorkSpace/Github/AN24_10/tcp/conf/conf.ini')
 PATH = config.get('History Files', 'PATH')
 FILE_INFO = config.get('History Files', 'FILE_INFO')
 FILE_DATA = config.get('History Files', 'FILE_DATA') 
+FILE_NOTE = config.get('History Files', 'FILE_NOTE')
 
 p = client_p()
 p.handshake()
@@ -55,7 +58,7 @@ class Handler():
         '''
         return os.listdir(PATH) and 1 or 0    
 
-    def handle(self, content, tag): #tag=0:info;tag=1:data
+    def handle(self, content, tag): #tag=0:info;tag=1:data;tag=2:note
         if 0 == WEB_STAT:
            self.local(content, tag) 
         else:
@@ -94,14 +97,15 @@ class Handler():
             print '[ok] link to server'
         return s
 #------------------------------------------
-    def local(self, content, tag):  #tag=0:info;tag=1:data
-        '''
+    def local(self, content, tag):  #tag=0:info;tag=1:data;tag=2:note
+        
         if 0 == tag:
             self.local_info(content)
-        else:
+        elif 1 == tag:
             self.local_data(content)
-        '''
-        self.local_data(content) if tag else self.local_info(content)
+        else:
+            self.local_note(content)
+        #self.local_data(content) if tag else self.local_info(content)
 #-----------------------------------------
     def roaming(self, content, tag):
         try:
@@ -122,7 +126,7 @@ class Handler():
         else:
             pass
 ##----------------------------------
-    def local_info(self, content):#write to json
+    def local_info(self, content):#write to json, content is a instance
         self.syni = content.__dict__
         print 'self.syni(Local):', self.syni
         with open(FILE_INFO % self._uuid,'w+') as f:
@@ -132,29 +136,36 @@ class Handler():
     def local_data(self, content):
         with open(FILE_DATA % self._uuid,'a+') as f:
             f.writelines('%s\n' % content)
+
+    def local_note(self, content): #content is a list
+        with open(FILE_NOTE % self._uuid,'a+') as f:
+            f.writelines('%s\n' % str(content))
 ##----------------------------------
 
     def upload_current(self, content, tag):
-        '''
+        
         if 0 == tag:
             self.upload_current_info(content)
-        else:
+        elif 1 == tag:
             self.upload_current_data(content)
-        '''
-        self.upload_current_data(content) if tag else \
-                self.upload_current_data(content)
+        else:
+            self.upload_current_note(content)
+        
+        #self.upload_current_data(content) if tag else \
+        #        self.upload_current_data(content)
 
 ##----------------------------------
 
     def delete_history(self,filename, tag):
-        '''
+        
         if 0 == tag:
             self.delete_history_info(filename)
-        else:
+        elif 1 == tag:
             self.delete_history_data(filename)
-        '''
-        self.delete_history_data(filename) if tag else \
-                self.delete_history_info(filename)
+        else:
+            self.delete_history_note(filename)
+        #self.delete_history_data(filename) if tag else \
+        #       self.delete_history_info(filename)
 
 ##---------------------------------##
 
@@ -164,8 +175,12 @@ class Handler():
         print 'self.syni(Current):', self.syni
         self._sock.send('CINFO'+str(content.__dict__)+'\n'+'\r\n')
         #self._sock.send('CINFO'+str(content)+'\n'+'\r\n')
+
     def upload_current_data(self, content):
         self._sock.send('CDATA'+content+'\r\n')
+
+    def upload_current_note(self, content):   #content is list
+        self._sock.send('CNOTE' + str(content) + '\r\n')
 ###---------------------
     def upload_history_info(self): #parse json file
         files = self.traversal()[0]
@@ -186,12 +201,27 @@ class Handler():
                     self._sock.send('HDATA'+line+'\r\n')
             self.delete_history_data(_file)
 
+    def upload_history_note(self):
+        files = self.traversal()[2]
+        for _file in files:
+            self._sock.send('HIST_NOTE'+_file + '\r\n')
+            with open(FILE_NOTE % _file,'r') as f:
+                lines = f.readlines()
+                for line in lines:
+                    self._sock.send('HNOTE'+line+'\r\n')
+            self.delete_history_data(_file)
+
+
 ###---------------------
     def delete_history_info(self, filename):
         if os.path.exists(FILE_INFO % filename):
             os.remove(FILE_INFO % filename)
 
     def delete_history_data(self, filename):
+        if os.path.exists(FILE_DATA % filename):
+            os.remove(FILE_DATA % filename)
+
+    def delete_history_note(self, filename):
         if os.path.exists(FILE_DATA % filename):
             os.remove(FILE_DATA % filename)
 ###-------------------###
@@ -201,7 +231,8 @@ class Handler():
         for parent, dirname, filenames in os.walk(PATH):
             files_info = [info[:-5] for info in filenames if info[-4:]=='info'] 
             files_data = [data[:-5] for data in filenames if data[-4:]=='data']
-        return files_info, files_data
+            files_note = [data[:-5] for data in filenames if data[-4:]=='info']
+        return files_info, files_data, files_note
 ####-------------------------####    
 
 class Patient():
