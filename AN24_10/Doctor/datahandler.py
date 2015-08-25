@@ -78,6 +78,7 @@ class DataHandler():
 #----------------------------
 ##---------------------------
     def syn_info(self, patient_info, _uuid):
+        self.info = patient_info.__dict__
         self._sock.send('UUID'+ _uuid +'SYNI' + str(patient_info.__dict__) + '\r\n')#SYNI=SYN Info
         print 'syn_info,UUID:', _uuid
         print 'syn_info,patient_info:', str(patient_info.__dict__)
