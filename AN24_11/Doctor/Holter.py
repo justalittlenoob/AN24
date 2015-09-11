@@ -266,15 +266,10 @@ class Holter(QMainWindow, Ui_Holter):
         
         for i in range(len(self.an24Dict)):
             self.an24Dict[self.an24List[i]].start_time=time.time()
-            print '4444444444444'
             self.an24Dict[self.an24List[i]].data_handler.download_thread(self.an24List[i])
-            print '555555555'
         #//////////////////////////////////////////////////
-        print '6666666666'
         self.widget_changed()
-        print '7777777777'
         self.timerPaint.start(2000)
-        print '8888888888'
     def update_patient_info(self, dictChosen):
         try:
             self.label_name.setText(u'名字：'+dictChosen.patient.name)

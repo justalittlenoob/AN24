@@ -39,10 +39,15 @@ class DataHandler():
         return s
 
 #---------------------------
-    def download_thread(self,_uuid):
-        threading.Thread(target=self.download,
-                        args=(_uuid,)
-                        ).start()
+    def download_thread(self,_uuid, switch='open'):
+        if switch == 'open':
+            threading.Thread(target=self.download,
+                            args=(_uuid,)
+                            ).start()
+        elif switch == 'close':
+            threading.Thread(target=self.download,
+                            args=(_uuid,)
+                            ).stop()
 #---------------------------
     def download(self, _uuid):
         try:
@@ -76,6 +81,9 @@ class DataHandler():
                         note = eval(m.group()[9:-4])
                         self.note.append(note)
                         print 'CNOTE:', self.note
+                    elif m.group()[4:9] == 'CINFO':
+                        print'm[cinfo]', m.group()
+                        self.info = eval(m.group()[9:-4])
                     else:
                         self.handle_data(m.group())
                 while endstr in lbuf:

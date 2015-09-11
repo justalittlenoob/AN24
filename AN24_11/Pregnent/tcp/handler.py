@@ -70,7 +70,8 @@ class Handler():
                     pass
                 else:
                     if buf[40:44] == 'SYNI':
-                        self.syni == eval(buf[44:]) #if not null,read it then make it null,if null pass
+                        #print 'syni raw data:', eval(buf[44:])
+                        self.syni = eval(buf[44:]) #if not null,read it then make it null,if null pass
                         print 'self.syni(SYNI):', self.syni
             if self._sock in ws:
                 try:
