@@ -83,7 +83,7 @@ NBLOCK_STR_LEN = 36
 NBLOCK_SNR_TAG = '53'   # S
 HEART_RATE_RESOLUTION = 0.25
 TOTO_RESOLUTION = 0.5
-SNR = 0.0
+SNR = 0.00
 ELECTRODE_STR_LEN = 20
 def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     '''Compute the FHR MHR TOCO mother_mv 
