@@ -170,7 +170,7 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
          if cblock_str[14:16] == NBLOCK_SNR_TAG:
              global SNR
              fetal_signal = int(cblock_str[16:24], 16)
-             noise = int_16(cblock_str[24:32])          #int(cblock_str[24:32], 16)
+             noise = int_16(cblock_str[24:32])   #int(cblock_str[24:32], 16)
              SNR_func = lambda x, y : round(x / float(y), 4)
              SNR = SNR_func(fetal_signal,
                            noise)
@@ -224,7 +224,15 @@ def data_parse(cblock_str, run_chk, low_battry, _count_pos):
     return data_one_sec
 
 
-def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_pos,handle):
+def data_recv_An24(sock,
+                   data_cache,
+                   run_chk,
+                   low_battry,
+                   stop, 
+                   bt_addr,
+                   _count_pos,
+                   out_of_range,
+                   handle):
     # ************
     #   connect An24(bd_addr) then recieve data from it
     # ************
@@ -248,7 +256,11 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
         #-- reconnection
         
         if not len(buf):
+            out_of_range[0] = True
+            handle(out_of_range[0], 3)
             sock = bt_reconn.reconnect(bt_addr, sock, _count_pos)
+            out_of_range[0] = False
+            handle(out_of_range[0], 3)
             buf = sock.recv(65535)
             
             #break
@@ -261,7 +273,10 @@ def data_recv_An24(sock, data_cache, run_chk, low_battry,stop, bt_addr, _count_p
         for m in pattern.finditer(lbuf):
             #print m.group()
             handle(m.group(),1)
-            data_one_sec = data_parse(m.group(), run_chk, low_battry, _count_pos)
+            data_one_sec = data_parse(m.group(),
+                                      run_chk,
+                                      low_battry,
+                                      _count_pos)
             
             if data_one_sec != None:
                 stream_in_cache(data_one_sec, data_cache)
@@ -298,19 +313,54 @@ def stream_in_cache(data_slice, data_cache):
     #print len(data_cache)
 
 import threading
-def start_data_thread(sock, data_cache, run_chk,low_battry,stop,bt_addr,_count_pos,handle):
+def start_data_thread(sock,
+                      data_cache,
+                      run_chk,
+                      low_battry,
+                      stop,
+                      bt_addr,
+                      _count_pos,
+                      out_of_range,
+                      handle):
     '''Make a thread'''
-    if stop == False:
+    if stop[0] == False:
         threading.Thread(target=data_recv_An24,
-                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr,_count_pos,handle)
+                args=(sock,
+                      data_cache,
+                      run_chk,
+                      low_battry,
+                      stop,
+                      bt_addr,
+                      _count_pos,
+                      out_of_range,
+                      handle)
             ).start() 
     else:
         threading.Thread(target=data_recv_An24,
-                args=(sock,data_cache,run_chk,low_battry,stop,bt_addr,_count_pos,handle)
+                args=(sock,
+                      data_cache,
+                      run_chk,
+                      low_battry,
+                      stop,
+                      bt_addr,
+                      _count_pos,
+                      out_of_range,
+                      handle)
             ).stop()
-def close_data_thread(sock, data_cache, run_chk,low_battry,stop,bt_addr,_count_pos,handle):
+
+def close_data_thread(sock,
+                      data_cache,
+                      run_chk,
+                      low_battry,
+                      stop,
+                      bt_addr,
+                      _count_pos,
+                      out_of_range,
+                      handle):
     sock.send(OFD)
+    stop[0] == True
     sock.close()
+    handle('OFF', 4)
 
 def not_empty(s):
 	return s and s.strip()

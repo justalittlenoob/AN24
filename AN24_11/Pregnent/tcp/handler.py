@@ -58,7 +58,7 @@ class Handler():
         '''
         return os.listdir(PATH) and 1 or 0    
 
-    def handle(self, content, tag): #tag=0:info;tag=1:data;tag=2:note
+    def handle(self, content, tag): #tag=0:info;tag=1:data;tag=2:note;tag=3:out_of_range;tag=4:stop
         if 0 == WEB_STAT:
            self.local(content, tag) 
         else:
@@ -111,8 +111,10 @@ class Handler():
             self.local_info(content)
         elif 1 == tag:
             self.local_data(content)
-        else:
+        elif 2 == tag:
             self.local_note(content)
+        else:
+            pass
         #self.local_data(content) if tag else self.local_info(content)
 #-----------------------------------------
     def roaming(self, content, tag):
@@ -156,9 +158,14 @@ class Handler():
             self.upload_current_info(content)
         elif 1 == tag:
             self.upload_current_data(content)
-        else:
+        elif 2 == tag:
             self.upload_current_note(content)
-        
+        elif 3 == tag:
+            self.upload_current_outofrange(content)
+        elif 4 == tag:
+            self.upload_current_stop(content)
+        else:
+            pass
         #self.upload_current_data(content) if tag else \
         #        self.upload_current_data(content)
 
@@ -189,6 +196,13 @@ class Handler():
 
     def upload_current_note(self, content):   #content is list
         self._sock.send('CNOTE' + str(content) + '\r\n')
+    
+    def upload_current_outofrange(self, content):#oor=out of range
+        self._sock.send('OOR' + str(content) + '\r\n')
+    
+    def upload_current_stop(self, content):   #stop
+        self._sock.send('OFF' + '\r\n')
+
 ###---------------------
     def upload_history_info(self): #parse json file
         files = self.traversal()[0]

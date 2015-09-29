@@ -175,7 +175,7 @@ class Holter(QMainWindow, Ui_Holter):
         self.animation_show.setStartValue(PyQt4.QtCore.QRect(self.size().width(), 70, 171, 671))
         self.animation_show.setEndValue(PyQt4.QtCore.QRect(self.size().width()-188,70, 171, 671))
         self.button_position()
-        print 'resize'
+        #print 'resize'
         
     def update_paint(self):
         try:
@@ -500,7 +500,8 @@ class Holter(QMainWindow, Ui_Holter):
         try:
             nameChosen =self.an24Chosen['name']            
         except KeyError, reason:
-            print 'have not chosen a device'
+            pass
+            #print 'have not chosen a device'
         else:  
             Cache = self.an24Dict[nameChosen].rawAN24.cache  
             if (len(Cache)!=0) and (self.is_soundOn == True):
@@ -613,7 +614,7 @@ class Holter(QMainWindow, Ui_Holter):
         except KeyError, reason:
             QtGui.QMessageBox.information( self, "notice", "please start detection first." )
         else:
-            self.an24Dict[nameChosen].rawAN24.stop_recv()       
+            self.an24Dict[nameChosen].rawAN24.stop_recv(self.an24Dict[nameChosen].handler.handle)   #stop_recv    
             self.an24Dict.pop(nameChosen)
             if self.an24Dict:
                 for key in self.an24Dict:

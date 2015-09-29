@@ -33,10 +33,10 @@ class AN24 ():
         
         self.cache = []                #data cache
         self.run_chk = [0, 0, 0, 0, 0]  # checking when running
-        self.bt_state = [False]            # bluetooth connection status 
+        self.bt_state = [True]            # bluetooth connection status 
         self.out_of_range = [False]     # whether the person is in range
         self.low_battry = [False]       # the low battry signal
-        self.stop = False              # stop recieve data
+        self.stop = [False]              # stop recieve data
         
     @property
     #return battry(type=float)
@@ -58,10 +58,26 @@ class AN24 ():
 
     '''start a thread to recv data'''
     def data_recv(self,handle):
-        data.start_data_thread(self.sock,self.cache,self.run_chk,self.low_battry,self.stop,self._addr,self._count_pos,handle)
+        data.start_data_thread(self.sock,
+                               self.cache,
+                               self.run_chk,
+                               self.low_battry,
+                               self.stop,
+                               self._addr,
+                               self._count_pos,
+                               self.out_of_range,
+                               handle)
 
     def stop_recv(self,handle):
-        data.close_data_thread(self.sock,self.cache,self.run_chk,self.low_battry,self.stop,self._addr,self._count_pos,handle)
+        data.close_data_thread(self.sock,
+                               self.cache,
+                               self.run_chk,
+                               self.low_battry,
+                               self.stop,
+                               self._addr,
+                               self._count_pos,
+                               self.out_of_range,
+                               handle)
         #self._sock.close()
     def _data_recv(self):
         if self._data_recv() != None:

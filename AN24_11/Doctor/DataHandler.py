@@ -18,8 +18,10 @@ class DataHandler():
         self.note = []
         self.data = []
         self.run_chk = [0,0,0,0,0]
+        self.out_of_range = [False]
         self.low_battry = [False]
         self._count_pos = ['0']
+        
 #-----------------------
     def creat_link(self):
         try:
@@ -51,7 +53,9 @@ class DataHandler():
 #---------------------------
     def download(self, _uuid):
         try:
-            self._sock.send('DCPD' + _uuid + '\r\n')#DCPD=Download Current Patient Data
+            self._sock.send('DCPD' + 
+                             _uuid + 
+                             '\r\n')#DCPD=Download Current Patient Data
         except Exception, msg:
             print msg
             print '[Fail] send download current patient data request'
@@ -67,6 +71,11 @@ class DataHandler():
             pattern = re.compile(r'1002.*?1003', re.DOTALL)
             buf = self._sock.recv(65535)
             #print '------buf:', buf
+            '''
+            if buf[:3] == 'OOR':  #out of range
+                self.out_of_range[0] = eval(buf[3:])
+                print 'out_of_range(doctor):', self.out_of_range
+            '''
 
             if buf[:5] == 'CINFO':
                 self.info = eval(buf[5:])
@@ -84,6 +93,9 @@ class DataHandler():
                     elif m.group()[4:9] == 'CINFO':
                         print'm[cinfo]', m.group()
                         self.info = eval(m.group()[9:-4])
+                    elif m.group()[4:7] == 'OOR':
+                        print 'OOR(doctor):', m.group()
+                        self.out_of_range == eval(m.group()[7:-4])
                     else:
                         self.handle_data(m.group())
                 while endstr in lbuf:
@@ -94,7 +106,12 @@ class DataHandler():
 ##---------------------------
     def syn_info(self, patient_info, _uuid):
         self.info = patient_info.__dict__
-        self._sock.send('UUID'+ _uuid +'SYNI' + str(patient_info.__dict__) + '\r\n')#SYNI=SYN Info
+        self._sock.send('UUID' +
+                        _uuid  +
+                        'SYNI' + 
+                        str(patient_info.__dict__) + 
+                        '\r\n')#SYNI=SYN Info
+
         print 'syn_info,UUID:', _uuid
         print 'syn_info,patient_info:', str(patient_info.__dict__)
 ##---------------------------
@@ -178,7 +195,7 @@ class DataHandler():
                 noise = int_16(cblock_str[24:32])          #int(cblock_str[24:32], 16)
                 SNR_func = lambda x, y : round(x / float(y), 4)
                 SNR = SNR_func(fetal_signal,
-                            noise)
+                               noise)
              
                 #print 'SNR:', SNR
             else:
