@@ -133,6 +133,7 @@ class Handler():
         if WEB_STAT and self.has_history:
             self.upload_history_info()
             self.upload_history_data()
+            self.upload_history_note()
         else:
             pass
 ##----------------------------------
@@ -231,17 +232,20 @@ class Handler():
             self.delete_history_data(_file)
 
     def upload_history_note(self):
+        print 'in.,.upload history note...'
         files = self.traversal()[2]
+        print'files:', files
         for _file in files:
             self._sock.send('HIST_NOTE'+_file + '\r\n')
             with open(FILE_NOTE % _file,'r') as f:
                 lines = f.readlines()
                 for line in lines:
+                    print 'line',line
                     try:
                         self._sock.send('HNOTE'+line+'\r\n')
-                    except:
-                        pass
-            self.delete_history_data(_file)
+                    except Exception,e:
+                        print 'HIST_NOTE error:',e
+            self.delete_history_note(_file)
 
 
 ###---------------------
@@ -254,8 +258,8 @@ class Handler():
             os.remove(FILE_DATA % filename)
 
     def delete_history_note(self, filename):
-        if os.path.exists(FILE_DATA % filename):
-            os.remove(FILE_DATA % filename)
+        if os.path.exists(FILE_NOTE % filename):
+            os.remove(FILE_NOTE % filename)
 ###-------------------###
 
 ####-----------------------------
@@ -263,7 +267,7 @@ class Handler():
         for parent, dirname, filenames in os.walk(PATH):
             files_info = [info[:-5] for info in filenames if info[-4:]=='info'] 
             files_data = [data[:-5] for data in filenames if data[-4:]=='data']
-            files_note = [data[:-5] for data in filenames if data[-4:]=='info']
+            files_note = [note[:-5] for note in filenames if data[-4:]=='note']
         return files_info, files_data, files_note
 ####-------------------------####    
 

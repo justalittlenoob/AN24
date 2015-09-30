@@ -1,6 +1,7 @@
 #!/usr/b in/env pytho n
 #-*- coding: UTF-8 -*-
 import bluetooth
+import select
 def scan_bluetooth():
     print("performing inquiry...")
     An24_menu = {}
@@ -48,8 +49,9 @@ def conn(bt_addr="00:80:98:0E:39:77"):
          '''
     except :
         return False
-    return sock 
     print '[ok] connection'
+    return sock 
+    
 '''
 def syn_clk(sock):
     UTIME =  machenPaket()
@@ -75,6 +77,7 @@ def start(sock):
     DATE  = '\x10\x02N02PCDATE\x10\x03\xfb\x0a'
     #print 'G', G
     
+ 
     sock.send(DISN)
     print '[ok] setting DISN'
     #sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
@@ -230,7 +233,34 @@ def init_check(electrode_str, run_chk):
     return rvalue 
 
 #import time
+def make_empty(sock):
+    IMP3 = '\x10\x02N02PCIM3\x10\x03\xee\xf9'
+    sock.send(IMP3)
+    msg = sock_recv(sock, 24, 24)
+    print 'msg:', msg
+    if '10024e3032414e474f541003' == msg:
+        print 'ready to del old data'
+        sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
+        print '[ok] del old data'
+    else:
+        print 'no old data'
+    return 
+    '''
+    rs, ws, es = select.select([sock], [sock], [])
+    if sock in rs:
+        print 'rs:', rs
+        
+        try:
+            print 'cleanning old data...'
+            sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
+            print '[ok]clean old data'
+        except:
+            pass
+    else:
+        print 'no old data'
+    '''
 def checking(sock, run_chk):
+    make_empty(sock)
     #init_check(check_signal(sock))          #not gui
     #return  init_check(check_signal(sock)) #gui
     return init_check(check_signal(sock), run_chk)
