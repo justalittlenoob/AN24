@@ -32,6 +32,7 @@ def is_An24(bt_name):
     else:
         return False
 import re
+
 def conn(bt_addr="00:80:98:0E:39:77"):
     port = 1 
     print 'port:', port
@@ -49,6 +50,7 @@ def conn(bt_addr="00:80:98:0E:39:77"):
          '''
     except :
         return False
+    make_empty(sock)
     print '[ok] connection'
     return sock 
     
@@ -219,8 +221,10 @@ def init_check(electrode_str, run_chk):
                 rvalue[0] = 1
             else:
                 pass
+        
         else:
             pass
+            
     elif len(electrode_str) == BLACK_UNCONN_STR_LEN:   #Black
         if electrode_str == '10024e3032414e69101010101003':
             rvalue[0] = 1
@@ -234,16 +238,28 @@ def init_check(electrode_str, run_chk):
 
 #import time
 def make_empty(sock):
-    IMP3 = '\x10\x02N02PCIM3\x10\x03\xee\xf9'
-    sock.send(IMP3)
-    msg = sock_recv(sock, 24, 24)
-    print 'msg:', msg
-    if '10024e3032414e474f541003' == msg:
+    G = '\x10\x02G\x10\x03\x42\x1f'
+    H = '\x10\x02H\x10\x03\x6e\x2e'
+    sock.send(G)
+    test_str = ''
+    print '111111'
+    while len(test_str) <= 20:
+        print '2222222222'
+        msg =sock.recv(1024)
+        print '3333333'
+        if not len(msg):
+            break
+        test_str = test_str + msg 
+    has_got = test_str.find('GOT')
+    print 'test_str', test_str
+    print 'has_got', has_got
+    if -1 != has_got:
         print 'ready to del old data'
         sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
         print '[ok] del old data'
     else:
         print 'no old data'
+    sock.send(H)
     return 
     '''
     rs, ws, es = select.select([sock], [sock], [])
@@ -260,7 +276,7 @@ def make_empty(sock):
         print 'no old data'
     '''
 def checking(sock, run_chk):
-    make_empty(sock)
+    #make_empty(sock)
     #init_check(check_signal(sock))          #not gui
     #return  init_check(check_signal(sock)) #gui
     return init_check(check_signal(sock), run_chk)
