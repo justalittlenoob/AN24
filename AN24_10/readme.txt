@@ -32,7 +32,7 @@ import datahandler
 
 3.获取所有在线孕妇：d_c.get_online_p(),得到一个dict，key是uuid，value是盒子编号
 
-4.获取其中某一个孕妇的实时数据：d_h.download(_uuid)，_uuid，为第三步中获得的dict  里的
+4.获取其中某一个孕妇的实时数据：d_h.download_thread(_uuid,"close")，_uuid，为第三步中获得的dict  里的
 
 5.修改孕妇信息后，调用函数d_h.syn_info(patient_info,_uuid), patient_info为修改后    孕妇信息“类”的实例，不是字典。_uuid，为第三步中获得的dict里的
 

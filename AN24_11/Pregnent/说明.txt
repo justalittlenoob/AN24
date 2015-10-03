@@ -1,5 +1,0 @@
-缺少AN24.py
-填写信息的函数是fill_info,在Holter.py的406行的patient_info就是病人信息的字典，key包括'person_num'，'name'，‘age’‘weeks’‘outpatient_num’‘hospitalization_num’‘bed_num’‘guardianship_num’
-发送信息的函数可以在if patient_info：里调用。
-
-data_recv（）在start_detecting方法里，在Holter.py的455行
