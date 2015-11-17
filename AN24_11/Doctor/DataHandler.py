@@ -21,6 +21,8 @@ class DataHandler():
         self.out_of_range = [False]
         self.low_battry = [False]
         self._count_pos = ['0']
+        #self.his_person = {}
+        #self.his_data = []
         
 #-----------------------
     def creat_link(self):
@@ -50,6 +52,8 @@ class DataHandler():
             threading.Thread(target=self.download,
                             args=(_uuid,)
                             ).stop()
+#---------------------------
+
 #---------------------------
     def download(self, _uuid):
         try:
@@ -322,8 +326,11 @@ class Patient():
 if '__main__' == __name__:
     dh = DataHandler()
     dc = DoctorClient()
+    #dc.get_online_p()
+    #dc.get_his_p('10','000000000000000000','0000-00-00 00:00:00','0000-00-00 00:00:00','hnthnt')
+    dc.review('cc0b9e00-69a2-11e5-a614-1078d2f63bb4')
     #print 'online_patient.items[0][0]', dc.online_patient.items[0][0]
-    dh.download('a88c3ea1-3ffc-11e5-a6fb-1078d2f63bb4')
+    #dh.download('a88c3ea1-3ffc-11e5-a6fb-1078d2f63bb4')
 
 
 

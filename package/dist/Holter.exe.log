@@ -7,3 +7,9 @@ ImportError: No module named Ui_Holter
 Traceback (most recent call last):
   File "Holter.py", line 10, in <module>
 ImportError: No module named Ui_Holter
+Traceback (most recent call last):
+  File "Holter.py", line 10, in <module>
+ImportError: No module named Ui_Holter
+Traceback (most recent call last):
+  File "Holter.py", line 10, in <module>
+ImportError: No module named Ui_Holter
