@@ -86,15 +86,7 @@ class DoctorClient():
                             ).stop()
         '''
 #---------------------------
-    def review(self,_uuid, switch='open'):
-        if switch == 'open':
-            threading.Thread(target=self._review,
-                            args=(_uuid,)
-                            ).start()
-        elif switch == 'close':
-            threading.Thread(target=self._download,
-                            args=(_uuid,)
-                            ).stop()
+    
 #---------------------------
 
 #---------------------------
