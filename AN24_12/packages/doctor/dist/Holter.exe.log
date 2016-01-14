@@ -1,0 +1,23 @@
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "threading.pyo", line 810, in __bootstrap_inner
+  File "threading.pyo", line 763, in run
+  File "DataHandler.pyo", line 76, in download
+error: [Errno 10054] 
+
+Traceback (most recent call last):
+  File "Holter.py", line 256, in update_patient
+  File "DoctorClient.pyo", line 64, in get_online_p
+socket.error: [Errno 10054] 
+Traceback (most recent call last):
+  File "Holter.py", line 256, in update_patient
+  File "DoctorClient.pyo", line 64, in get_online_p
+socket.error: [Errno 10054] 
+Traceback (most recent call last):
+  File "Holter.py", line 256, in update_patient
+  File "DoctorClient.pyo", line 64, in get_online_p
+socket.error: [Errno 10054] 
+Traceback (most recent call last):
+  File "Holter.py", line 256, in update_patient
+  File "DoctorClient.pyo", line 64, in get_online_p
+socket.error: [Errno 10054] 

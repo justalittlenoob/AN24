@@ -1,0 +1,21 @@
+[Server]
+host = 172.23.78.227
+port = 11000
+
+[History Files]
+path = D:/WorkSpace/history
+file_info = D:/WorkSpace/history/%s.info
+file_data = D:/WorkSpace/history/%s.data
+file_note = D:/WorkSpace/history/%s.note
+
+[Local Settings]
+xyratio = 1
+screen_ratio = 0.9
+fhr_bottom_limit = 80
+fhr_lower_limit = 110
+fhr_upper_limit = 130
+fhr_top_limit = 190
+is_alarm_sound = OFF
+init_soundon = False
+print_minutes = 20
+
