@@ -32,3 +32,13 @@ Traceback (most recent call last):
   File "bluetooth\msbt.pyo", line 9, in discover_devices
 IOError: No Bluetooth adapter detected
 
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "threading.pyo", line 810, in __bootstrap_inner
+  File "threading.pyo", line 763, in run
+  File "data.pyo", line 261, in data_recv_An24
+  File "bt_reconn.pyo", line 49, in reconnect
+  File "bt_reconn.pyo", line 9, in find_this_bt
+  File "bluetooth\msbt.pyo", line 9, in discover_devices
+IOError: No Bluetooth adapter detected
+

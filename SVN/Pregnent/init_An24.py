@@ -50,15 +50,7 @@ def conn(bt_addr="00:80:98:0E:39:77"):
     sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
     try:    
         sock.connect((bt_addr, port))
-        #sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
-        '''
-        msg = sock_recv(sock, 24, 24)
-        print 'msg:', msg
-        if '10024e3032414e474f541003' == msg:
-            sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
-        else:
-            pass
-         '''
+
     except :
         return False
     make_empty(sock)
@@ -159,12 +151,16 @@ def sock_recv(sock, *str_lens):
     endstr = '1003'
     endpos = 0
     #print 'recv:',args[0],args[1],sock
+    
     while len(mgroup)!=str_lens[0] and \
             len(mgroup)!=str_lens[1] :
-        
+    
+   
         buf = sock.recv(65535)
+        print 'buf:', buf
         if buf == '':
             return mgroup 
+         
         if not len(buf):
             break
         
@@ -183,7 +179,7 @@ def sock_recv(sock, *str_lens):
             pass
     
         lbuf = lbuf[endpos:]
-    #print 'mgroup:', mgroup    
+    print 'mgroup:', mgroup    
     return mgroup
 
 #check_value = [0, 0, 0, 0, 0]
