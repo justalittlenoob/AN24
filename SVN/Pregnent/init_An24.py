@@ -123,7 +123,7 @@ def battry(sock):
         rest_time = ((20*battry)-60)/1.2
         return rest_time
     except AttributeError:
-        print 'connect fail..., check your bluetooth'
+        print 'battry fail..., restart software'
     
     '''
     hexbat = int_16(battry)
@@ -139,11 +139,14 @@ def thread_bat(sock):
 import re
 def check_signal(sock):
     IMP3 = '\x10\x02N02PCIM3\x10\x03\xee\xf9'
-    sock.send(IMP3)
-    #print 'in check_signal'
-    return sock_recv(sock, 24, 28)
-
+    try:
+        sock.send(IMP3)
+        #print 'in check_signal'
+        return sock_recv(sock, 24, 28)
+    except:
+        print 'init check..., restart software'
 def sock_recv(sock, *str_lens):
+    sock.setblocking(0)
     mgroup=''
     pattern = re.compile(r'1002.*?1003', 
             re.DOTALL)
@@ -151,13 +154,11 @@ def sock_recv(sock, *str_lens):
     endstr = '1003'
     endpos = 0
     #print 'recv:',args[0],args[1],sock
-    
+    time.sleep(1) 
     while len(mgroup)!=str_lens[0] and \
             len(mgroup)!=str_lens[1] :
     
-   
         buf = sock.recv(65535)
-        print 'buf:', buf
         if buf == '':
             return mgroup 
          
@@ -179,7 +180,7 @@ def sock_recv(sock, *str_lens):
             pass
     
         lbuf = lbuf[endpos:]
-    print 'mgroup:', mgroup    
+    sock.setblocking(1)
     return mgroup
 
 #check_value = [0, 0, 0, 0, 0]
@@ -243,27 +244,39 @@ def init_check(electrode_str, run_chk):
     #check_value = rvalue
     return rvalue 
 
-#import time
+import time
 def make_empty(sock):
-    G = '\x10\x02G\x10\x03\x42\x1f'
     H = '\x10\x02H\x10\x03\x6e\x2e'
-    sock.send(G)
     test_str = ''
+    sock.setblocking(0)
+    time.sleep(2)
+    try:
+        test_str = sock.recv(1024)
+    except:
+        pass
+    '''
+    print 'test_str:',test_str
     while len(test_str) <= 20:
-        msg =sock.recv(1024)
+        try:
+            msg =sock.recv(1024)
+        except:
+            continue
         if not len(msg):
             break
         test_str = test_str + msg 
+    '''    
     has_got = test_str.find('GOT')
-    print 'test_str', test_str
-    print 'has_got', has_got
+    
+    print 'test_str: ', test_str
+    #print 'has_got', has_got
     if -1 != has_got:
         print 'ready to del old data'
         sock.send('\x10\x02N02PCDEL\x10\x03\xbe\x79')
         print '[ok] del old data'
     else:
+        sock.send(H)
         print 'no old data'
-    sock.send(H)
+    sock.setblocking(1)
     return 
     '''
     rs, ws, es = select.select([sock], [sock], [])

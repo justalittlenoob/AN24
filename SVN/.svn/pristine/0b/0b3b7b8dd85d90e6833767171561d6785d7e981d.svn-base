@@ -1,0 +1,44 @@
+Traceback (most recent call last):
+  File "Holter.py", line 423, in on_pushSearch_clicked
+  File "Holter.py", line 434, in search_an24
+  File "UiAN24.pyo", line 5, in __init__
+  File "AN24.pyo", line 32, in __init__
+AttributeError: conn fail, check bluetooth device
+Traceback (most recent call last):
+  File "Holter.py", line 132, in paintEvent
+KeyError: 'AN24 A001350'
+Traceback (most recent call last):
+  File "Holter.py", line 132, in paintEvent
+KeyError: 'AN24 A001350'
+Traceback (most recent call last):
+  File "Holter.py", line 132, in paintEvent
+KeyError: 'AN24 A001350'
+Traceback (most recent call last):
+  File "Holter.py", line 132, in paintEvent
+KeyError: 'AN24 A001350'
+Traceback (most recent call last):
+  File "Holter.py", line 132, in paintEvent
+KeyError: 'AN24 A001350'
+Traceback (most recent call last):
+  File "Holter.py", line 132, in paintEvent
+KeyError: 'AN24 A001350'
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "threading.pyo", line 810, in __bootstrap_inner
+  File "threading.pyo", line 763, in run
+  File "data.pyo", line 261, in data_recv_An24
+  File "bt_reconn.pyo", line 44, in reconnect
+  File "bt_reconn.pyo", line 9, in find_this_bt
+  File "bluetooth\msbt.pyo", line 9, in discover_devices
+IOError: No Bluetooth adapter detected
+
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "threading.pyo", line 810, in __bootstrap_inner
+  File "threading.pyo", line 763, in run
+  File "data.pyo", line 261, in data_recv_An24
+  File "bt_reconn.pyo", line 49, in reconnect
+  File "bt_reconn.pyo", line 9, in find_this_bt
+  File "bluetooth\msbt.pyo", line 9, in discover_devices
+IOError: No Bluetooth adapter detected
+
